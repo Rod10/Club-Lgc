@@ -1,0 +1,178 @@
+{
+  "constants": {
+    "operationStates": {
+      "CREATED": "Créée en attente",
+      "OPERATORS": "Opérateurs sélectionnés",
+      "READY": "Prêt à commencer",
+
+      "READY_CONDUITE": "Prêt à demander retrait de conduite",
+      "RETRAIT_CONDUITE": "Retrait de conduite demandé",
+      "RETRAIT_CONDUITE_SIGNED": "Retrait de conduite reçu",
+
+      "STARTED": "En cours",
+
+      "ATTES_SIGNED": "Attestation de consignation signée",
+      "ATTES_COUNTERSIGNED": "Attestation de consignation contresignée",
+      "AUTH_SIGNED": "Autorisation d'intervention signée",
+      "AUTH_VALIDATED": "Autorisation d'intervention validée",
+
+      "ITST_UPLOADED": "ITST envoyé",
+      "OTST_SIGNED": "OTST signé",
+      "OTST_COUNTERSIGNED": "OTST contresigné",
+      "ATST_SIGNED": "ATST signé",
+      "ATST_COUNTERSIGNED": "ATST contresigné",
+      "ADTST_SIGNED": "ADTST signé",
+      "ADTST_COUNTERSIGNED": "ADTST contresigné",
+      "AUTORISATION_SIGNED": "Autorisation de travail signé",
+      "AUTORISATION_COUNTERSIGNED": "Autorisation de travail contresigné",
+
+      "AVIS_REQUISITION_SIGNED":  "Avis de réquisition signé",
+      "AVIS_REQUISITION_COUNTERSIGNED": "Avis de réquisition contresigné",
+
+      "AVIS_FIN_REQUISITION_SIGNED":  "Avis de fin de réquisition signé",
+      "AVIS_FIN_REQUISITION_COUNTERSIGNED": "Avis de fin de réquisition contresigné",
+
+      "AVIS_SEPARATION_SIGNED":  "Avis de séparation signé",
+      "AVIS_SEPARATION_COUNTERSIGNED": "Avis de séparation contresigné",
+
+      "AVIS_FIN_SEPARATION_SIGNED":  "Avis de fin de séparation signé",
+      "AVIS_FIN_SEPARATION_COUNTERSIGNED": "Avis de fin de séparation contresigné",
+
+      "TST_1_DONE": "Travaux Phase 1 terminés",
+      "AVIS_FIN_SIGNED": "Avis de fin de travaux signé",
+      "AVIS_FIN_COUNTERSIGNED": "Avis de fin de travaux contresigné",
+      "AVIS_FIN_TRAVAUX_SIGNED": "Avis de fin de travaux signé",
+
+      "DECONSIGNMENT": "Déconsigné, en attente de validation",
+      "DECONSIGNMENT_ACK": "Autorisation de remise en conduite",
+      "VALIDE_RETOUR_CONDUIT": "Valide le retour à la conduite",
+
+      "TRANSMIS_RETOUR_CONDUIT": "Avis de retour à la conduite transmis",
+      "RETOUR_CONDUITE_SIGNED": "Avis de retour à la conduite signé",
+      "DONE": "Terminée",
+      "DELETED": "Supprimée",
+      "ABORTED": "Annulée",
+      "INTERRUPTED": "Interrompue",
+
+      "AUTH_ACCES_COUNTERSIGNED": "Autorisation d'accès contresigné",
+      "AUTH_ACCES_SIGNED": "Autorisation d'accès signé",
+      "AUTH_FIN_ACCES_SIGNED": "Avis de fin d'autorisation d'accès signé",
+      "AUTH_FIN_ACCES_COUNTERSIGNED": "Avis de fin d'autorisation d'accès contresigné"
+    },
+    "userStates": {
+      "CREATED": "Créé",
+      "ACTIVE": "Activé",
+      "INACTIVE": "Désactivé",
+      "DELETED": "Supprimé"
+    },
+    "contributorStates": {
+      "CREATED": "Créé",
+      "ACTIVE": "Activé",
+      "INACTIVE": "Désactivé",
+      "DELETED": "Supprimé"
+    },
+    "subscriptionStates": {
+      "CREATED": "Créé",
+      "ACTIVE": "Actif",
+      "EXPIRED": "Expirée"
+    },
+    "planTypes": {
+      "COURANTE": "Opérations courante",
+      "OUVRAGE": "Ouvrages et installations",
+      "EP": "Éclairage extérieur",
+      "BYES": "Bouyges Energies Services"
+    },
+    "roles": {
+      "ASSISTANT_BON_INTERVENTION": "Préparateur Bon d'intervention BT",
+      "ASSISTANT_BON_OPERATIONNEL": "Préparateur Bon opérationnel",
+      "ASSISTANT_BON_TRAVAIL_INSTALLATION": "Préparateur Bon de travail installation",
+      "ASSISTANT_BON_TRAVAIL_UPDATED": "Assistant Bon de travail +",
+      "ASSISTANT_LOG_BOOK": "Préparateur Carnet de bord",
+      "ASSISTANT_MANOEUVRE": "Préparateur Fiche de manœuvre",
+      "ASSISTANT_MANOEUVRE_BT": "Préparateur Fiche de manœuvre BT",
+      "ASSISTANT_MANOEUVRE_HT": "Préparateur Fiche de manœuvre HT",
+      "ASSISTANT_OPERATOR": "Préparateur Habilitation",
+      "ASSISTANT_OTST_BYES": "Préparateur OTST",
+      "ASSISTANT_QUIZZ": "Préparateur Quiz",
+      "ASSISTANT_RAPPORT_DEPANNAGE": "Préparateur Rapport après dépannage",
+      "ASSISTANT_WORK_ORDER": "Préparateur Bon de travail",
+      "CHEF": "Chef d'établissement",
+      "CONTROLLER_BON_INTERVENTION": "Vérificateur Bon d'intervention BT",
+      "CONTROLLER_BON_OPERATIONNEL": "Vérificateur Bon opérationnel",
+      "CONTROLLER_BON_TRAVAIL_INSTALLATION": "Vérificateur Bon de travail installation",
+      "CONTROLLER_BON_TRAVAIL_UPDATED": "Vérificateur Bon de travail +",
+      "CONTROLLER_LOG_BOOK": "Vérificateur Carnet de bord",
+      "CONTROLLER_MANOEUVRE": "Vérificateur Fiche de manœuvre",
+      "CONTROLLER_MANOEUVRE_BT": "Vérificateur Fiche de manœuvre BT",
+      "CONTROLLER_MANOEUVRE_HT": "Vérificateur Fiche de manœuvre HT",
+      "CONTROLLER_OPERATOR": "Vérificateur Habilitation",
+      "CONTROLLER_OTST_BYES": "Vérificateur OTST",
+      "CONTROLLER_QUIZZ": "Vérificateur Quiz",
+      "CONTROLLER_RAPPORT_DEPANNAGE": "Vérificateur Rapport après dépannage",
+      "CONTROLLER_WORK_ORDER": "Vérificateur Bon de travail",
+      "ENCADRANT": "Encadrant TST",
+      "EXPLOITATION": "Chargé d'exploitation électrique",
+      "SWITCH": "Superviseur"
+    },
+    "maneuverStates": {
+      "CREATED": "Créé",
+      "PREFILL": "En cours",
+      "SIGNED": "Préparée",
+      "CORRECTED": "Correction",
+      "COUNTERSIGNED": "Vérifiée",
+      "DONE": "Terminée"
+    },
+    "workOrderStates": {
+      "CREATED": "Créé",
+      "PREFILL": "En cours",
+      "SIGNED": "Préparé",
+      "CORRECTED": "Correction",
+      "COUNTERSIGNED": "Vérifié",
+      "DONE": "Terminé"
+    },
+    "bonInterventionStates": {
+      "CREATED": "Créé",
+      "PREFILL": "En cours",
+      "SIGNED": "Préparé",
+      "CORRECTED": "Correction",
+      "COUNTERSIGNED": "Vérifié",
+      "DONE": "Terminé"
+    },
+    "bonOperationnelStates": {
+      "CREATED": "Créé",
+      "PREFILL": "En cours",
+      "SIGNED": "En cours",
+      "CORRECTED": "Correction",
+      "COUNTERSIGNED": "Vérifié",
+      "DONE": "Terminé"
+    },
+    "habilitationTypes": {
+      "ELECTRICITY": "Électricité",
+      "GAS": "Gaz",
+      "AIPR": "AIPR",
+      "CACES": "CACES"
+    },
+    "habilitationRoles": {
+      "contributor": "Titulaire",
+      "employer": "Employeur / Délégataire",
+      "serviceManager": "Chef de service"
+    },
+    "habilitationStates": {
+      "CREATED": "Créé",
+      "PREFILL": "Pré-rempli",
+      "PRESIGNED": "Signé par le chef de service",
+      "SIGNED": "Signé par l'employer",
+      "COUNTERSIGNED": "Signé par le titulaire",
+      "EXPIRED": "Expirée",
+      "DELETED": "Supprimée",
+      "IN_USE": "En cours de validité",
+      "IN_CREATION": "En cours de préparation"
+    },
+    "quizzStates": {
+      "CREATED": "Créé",
+      "PREFILL": "Commencé",
+      "SIGNED": "Terminé",
+      "DONE": "Archivé"
+    }
+  }
+}
