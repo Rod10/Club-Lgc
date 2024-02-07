@@ -24,10 +24,20 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       allowNull: false,
     },
+    modificationDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    deletedOn: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   }, {
     freezeTableName: true,
     tableName: "PISTE",
     createdAt: "creationDate",
+    updatedAt: "modificationDate",
+    deletedAt: "deletedOn",
   });
     /* eslint-enable no-magic-numbers */
 

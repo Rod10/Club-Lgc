@@ -24,6 +24,10 @@ module.exports = {
       allowNull: false,
       type: Sequelize.DATE,
     },
+    MODIFICATION_DATE: {
+      allowNull: true,
+      type: Sequelize.DATE,
+    },
     DELETED_ON: {
       allowNull: true,
       type: Sequelize.DATE,

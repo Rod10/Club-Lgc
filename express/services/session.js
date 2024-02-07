@@ -19,7 +19,7 @@ const sessionsSrv = {};
 
 sessionsSrv.getLast = () => {
   logger.debug("Get last session");
-  return Session.findOne({order: [["createdAt", "DESC"]]});
+  return Session.findOne({order: [["creationDate", "DESC"]]});
 };
 
 module.exports = sessionsSrv;
