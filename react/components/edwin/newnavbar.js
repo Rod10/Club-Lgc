@@ -2,10 +2,7 @@ const React = require("react");
 const PropTypes = require("prop-types");
 
 const NewBaseNavbar = require("../newbasenavbar.js");
-const Button = require("../bulma/button.js");
-const Icon = require("../bulma/icon.js");
-const Search = require("./search.js");
-const Links = require("../../../express/constants/links");
+const Links = require("../../../express/constants/links.js");
 
 class NewNavbar extends React.Component {
   static _renderCopyright() {
@@ -34,13 +31,13 @@ class NewNavbar extends React.Component {
 
   _renderModule(edwinModule) {
     const actions = edwinModule.routes.reduce((acc, route) => {
-        const href = route.query
-          ? `${route.href}?${route.query}`
-          : `${route.href}`;
-        acc.push({
-          name: route.label,
-          href,
-        });
+      const href = route.query
+        ? `${route.href}?${route.query}`
+        : `${route.href}`;
+      acc.push({
+        name: route.label,
+        href,
+      });
       return acc;
     }, []);
     if (!actions.length) return null;
@@ -64,12 +61,6 @@ class NewNavbar extends React.Component {
     </div>;
   }
 
-  _renderSearchBox() {
-    return <div className="navbar-item is-hidden-mobile search-box">
-      <Search />
-    </div>;
-  }
-
   _renderHead() {
     const logo = "/images/logo_light.png";
 
@@ -90,7 +81,6 @@ class NewNavbar extends React.Component {
         scrollBarOnClick={this._handleScrollBarOpen}
         hrefLogout="/society/logout"
         defaultLogo="/images/small_logo_light.png"
-        navbarCenter={this._renderSearchBox()}
       />
 
       <div className={this.state.opened ? "scrollbar opened" : "scrollbar"}>

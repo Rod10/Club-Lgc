@@ -79,7 +79,7 @@ module.exports = class Application {
         });*/
     this.instance.use(express.static(PUBLIC));
     this.instance.use("/src", express.static("src"));
-    //this.instance.use(favicon(path.join(PUBLIC, "images", "blackspirit.png")));
+    // this.instance.use(favicon(path.join(PUBLIC, "images", "blackspirit.png")));
 
     this.instance.use(cookieParser());
 

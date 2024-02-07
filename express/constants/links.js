@@ -1,6 +1,6 @@
 const piste = {
   label: "PISTE",
-  logo: "/images/svg/home_operation.svg",
+  logo: "/images/track.png",
   routes: [
     {
       label: "Voir les pistes",
@@ -11,16 +11,16 @@ const piste = {
 
 const session = {
   label: "SESSION",
-  logo: "/images/icons/worker.svg",
+  logo: "/images/timetable.png",
   routes: [
     {
       label: "Liste des sessions",
       href: "/session/list",
-    }
+    },
   ],
 };
 
 module.exports = {
   piste,
-  session
+  session,
 };
