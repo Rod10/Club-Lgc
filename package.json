@@ -70,6 +70,7 @@
     "@babel/preset-env": "^7.23.5",
     "@babel/preset-react": "^7.23.3",
     "@cley_faye/watchers": "^2.0.3",
+    "@hendt/xml2json": "^1.0.3",
     "@keeex/eslint-config": "^1.11.5",
     "babel-loader": "^9.1.3",
     "bulma-divider": "^0.2.0",

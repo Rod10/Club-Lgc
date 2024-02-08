@@ -1,4 +1,3 @@
-const dateFns = require("date-fns");
 const React = require("react");
 
 const {preventDefault} = require("../utils/html.js");
@@ -6,9 +5,7 @@ const Validate = require("./form/validate.js");
 
 const Head = require("./helpers/head.js");
 const FileInput = require("./fileinput.js");
-const Input = require("./bulma/input.js");
 const Title = require("./bulma/title.js");
-const Notifications = require("./bulma/notifications.js");
 const Columns = require("./bulma/columns.js");
 const Column = require("./bulma/column.js");
 
@@ -19,8 +16,9 @@ class PisteCreation extends React.Component {
 
     this.state = {
       dalles: 0,
-      file: null,
-      old_file: null,
+      plan: null,
+      // eslint-disable-next-line camelcase
+      old_plan: null,
     };
     this.handleChange = this.handleChange.bind(this);
     this.onFileChange = this.onFileChange.bind(this);
@@ -35,7 +33,7 @@ class PisteCreation extends React.Component {
   onFileChange(evt) {
     if (evt.target.files.length) {
       /* eslint-disable-next-line camelcase */
-      this.setState({file: evt.target.files[0]});
+      this.setState({plan: evt.target.files[0]});
     }
   }
 
@@ -70,16 +68,16 @@ class PisteCreation extends React.Component {
           <label className="label">Plan de la piste</label>
           <div className="control">
             <FileInput
-              name="file"
+              name="plan"
               label="Glisser la pièce jointe"
-              doc={this.state.file}
+              doc={this.state.plan}
               handleFileChange={this.onFileChange}
             />
             <input
               type="hidden"
-              name="old_file"
-              defaultValue={this.state.old_file
-                ? this.state.old_file.id
+              name="old_plan"
+              defaultValue={this.state.old_plan
+                ? this.state.old_plan.id
                 : 0}
             />
           </div>
@@ -122,5 +120,4 @@ class PisteCreation extends React.Component {
   }
 }
 PisteCreation.displayName = "PisteCreation";
-
 module.exports = PisteCreation;

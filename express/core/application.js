@@ -19,7 +19,7 @@ const Mailer = require("./mailer.js");
 require("winston-daily-rotate-file");
 
 const favicon = require("serve-favicon");
-const {PUBLIC} = require("../utils/paths.js");
+const {PUBLIC, PLAN} = require("../utils/paths.js");
 const http = require("http");
 
 module.exports = class Application {
@@ -78,6 +78,7 @@ module.exports = class Application {
             next();
         });*/
     this.instance.use(express.static(PUBLIC));
+    this.instance.use("/plan", express.static(PLAN));
     this.instance.use("/src", express.static("src"));
     // this.instance.use(favicon(path.join(PUBLIC, "images", "blackspirit.png")));
 

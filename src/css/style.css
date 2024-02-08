@@ -582,7 +582,11 @@ table tbody td.orange {
 
 .operationDashboard .icon .fa.fa-times,
 table .icon .fa.fa-times,
-table .icon .fa.fa-trash {
+table .icon .fa.fa-trash,
+.icon .fa.fa-trash {
+  color: tomato;
+}
+.icon .fa.fa-trash {
   color: tomato;
 }
 

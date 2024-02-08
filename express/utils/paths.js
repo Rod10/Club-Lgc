@@ -11,11 +11,13 @@ const dataPathAbs = dataPath[0] === "/"
   : path.resolve(dataPath);
 const DOCUMENTS = path.resolve(dataPathAbs, "documents");
 const LOGOS = path.resolve(dataPathAbs, "logos");
+const PLAN = path.resolve(dataPathAbs, "plan");
 
 module.exports = {
   DOCUMENTS,
   LOGOS,
   LOGS,
+  PLAN,
   PUBLIC,
   TEMPLATES,
   VIEWS,

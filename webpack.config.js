@@ -15,7 +15,10 @@ const config = {
     "homepage": `${VIEWS}/homepage.js`,
     "navbar": `${VIEWS}/navbar.js`,
     "pistelist": `${VIEWS}/pistelist.js`,
+    "sessionlist": `${VIEWS}/sessionlist.js`,
+    "sessioncreation": `${VIEWS}/sessioncreation.js`,
     "pistecreation": `${VIEWS}/pistecreation.js`,
+    "pisteview": `${VIEWS}/pisteview.js`,
   },
   output: {
     path: path.resolve(__dirname, "dist", "public", "js"),

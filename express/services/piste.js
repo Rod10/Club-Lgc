@@ -11,10 +11,21 @@ pisteSrv.getAll = () => {
 
 pisteSrv.create = data => {
   logger.debug("Create piste");
+  const path = `/plan/${data.files["plan"][0].filename}`;
   return Piste.create({
     dalles: data.body.dalles,
-    path: data.file.path,
+    path,
     tours: 0,
+  });
+};
+
+pisteSrv.getById = id => {
+  logger.debug("Get piste with id=[%s]", id);
+  return Piste.findOne({
+    where: {id},
+    include: [
+      {association: Piste.Session},
+    ],
   });
 };
 
