@@ -5,7 +5,6 @@ const NavBar = require("../../react/components/edwin/newnavbar.js");
 const HomePage = require("../../react/components/homepage/newhomepage.js");
 const PisteList = require("../../react/components/pistelist.js");
 const PisteCreation = require("../../react/components/pistecreation.js");
-const PisteView = require("../../react/components/pisteview.js");
 
 const SessionList = require("../../react/components/sessionlist.js");
 const SessionCreation = require("../../react/components/sessioncreation.js");
@@ -15,7 +14,6 @@ const renderSrv = [
   {name: "navbar", component: NavBar},
   {name: "pisteList", component: PisteList},
   {name: "pisteCreation", component: PisteCreation},
-  {name: "pisteView", component: PisteView},
   {name: "sessionList", component: SessionList},
   {name: "sessionCreation", component: SessionCreation},
 ].reduce((acc, cur) => {

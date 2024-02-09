@@ -1,9 +1,7 @@
+/* eslint-disable no-magic-numbers */
 const path = require("path");
 const fs = require("fs");
-const express = require("express");
 const {glob} = require("glob");
-// const Datastore = require("nedb");
-const utils = require("./utils.js");
 
 module.exports = class Router {
   constructor(app) {
@@ -51,6 +49,7 @@ module.exports = class Router {
     glob(`${path.join(__dirname, "../api")}/**/controller.js`)
       .then(files => {
         files.forEach(file => {
+          // eslint-disable-next-line import/no-dynamic-require,global-require
           const controller = require(file)(this.app);
           const parts = file.split("/");
           const name = parts[parts.length - 2];
@@ -72,6 +71,7 @@ module.exports = class Router {
     glob(`${path.join(__dirname, "../api")}/**/routes.js`)
       .then(files => {
         files.forEach(file => {
+          // eslint-disable-next-line import/no-dynamic-require,global-require
           const routes = require(file)(this.app);
           const parts = file.split("/");
           const name = parts[parts.length - 2];
@@ -79,8 +79,8 @@ module.exports = class Router {
         });
       })
       .catch(err => {
-      console.error(err);
-    });
+        console.error(err);
+      });
   }
 
   /* loadMiddlewares() {

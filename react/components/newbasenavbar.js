@@ -61,28 +61,18 @@ NewBaseNavbar.propTypes = {
   hasScrollBar: PropTypes.bool,
   scrollBarOpened: PropTypes.bool,
   scrollBarOnClick: PropTypes.func,
-  hrefLogout: PropTypes.string,
   defaultLogo: PropTypes.string,
   logo: PropTypes.string,
   logoTitle: PropTypes.string,
-  navbarLeft: PropTypes.node,
-  navbarCenter: PropTypes.node,
-  navbarRight: PropTypes.node,
-  user: PropTypes.object,
 };
 NewBaseNavbar.defaultProps = {
   brandContent: undefined,
   hasScrollBar: false,
   scrollBarOpened: false,
   scrollBarOnClick: undefined,
-  hrefLogout: undefined,
   defaultLogo: undefined,
   logo: undefined,
   logoTitle: undefined,
-  navbarLeft: undefined,
-  navbarCenter: undefined,
-  navbarRight: undefined,
-  user: undefined,
 };
 
 module.exports = NewBaseNavbar;

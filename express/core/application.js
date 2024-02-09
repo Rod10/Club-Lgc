@@ -1,26 +1,21 @@
+/* eslint-disable no-magic-numbers */
 const events = require("events");
 const path = require("path");
 const fs = require("fs");
+const http = require("http");
 const express = require("express");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const hbs = require("hbs");
 const cookieParser = require("cookie-parser");
-//  http access logger
 const morgan = require("morgan");
 const rfs = require("rotating-file-stream");
-
-//  logger
+const favicon = require("serve-favicon");
 const logger = require("winston");
-// const emailConfig = require("../config/mails.json");
+const {PUBLIC, PLAN} = require("../utils/paths.js");
 const config = require("../config/app.json");
 const Router = require("./router.js");
-const Mailer = require("./mailer.js");
 require("winston-daily-rotate-file");
-
-const favicon = require("serve-favicon");
-const {PUBLIC, PLAN} = require("../utils/paths.js");
-const http = require("http");
 
 module.exports = class Application {
   constructor() {
@@ -31,6 +26,7 @@ module.exports = class Application {
     this.setup();
   }
 
+  // eslint-disable-next-line max-lines-per-function
   setup() {
     // this.instance.set('trust proxy', 1)
     this.instance.use(session({
@@ -49,15 +45,15 @@ module.exports = class Application {
     this.instance.use(bodyParser.json());
     this.instance.use(bodyParser.urlencoded({extended: true}));
     this.instance.set("view engine", "hbs");
-    //this.instance.set("views", path.join(__dirname, "src/html"));
+    // this.instance.set("views", path.join(__dirname, "src/html"));
 
     // view engine setup
-    hbs.registerHelper("section", function(name, options) {
+    hbs.registerHelper("section", (name, options) => {
       if (!this._sections) this._sections = {};
       this._sections[name] = options.fn(this);
       return null;
     });
-    hbs.registerHelper("log", function(data) {
+    hbs.registerHelper("log", data => {
       console.log(data);
     });
 
@@ -65,9 +61,9 @@ module.exports = class Application {
 
     hbs.registerHelper("json", object => object ? JSON.stringify(object) : "null");
 
-    hbs.registerHelper("eq", function(v1, v2, options) {
+    hbs.registerHelper("eq", (v1, v2, options) => {
       if (arguments.length < 3) throw new Error("Handlebar Helper eq needs 2 parameters");
-      if (v1 == v2) {
+      if (v1 === v2) {
         return options.fn(this);
       }
       return options.inverse(this);
@@ -80,7 +76,7 @@ module.exports = class Application {
     this.instance.use(express.static(PUBLIC));
     this.instance.use("/plan", express.static(PLAN));
     this.instance.use("/src", express.static("src"));
-    // this.instance.use(favicon(path.join(PUBLIC, "images", "blackspirit.png")));
+    // this.instance.use(favicon(path.join(PUBLIC, "images", "logo.png")));
 
     this.instance.use(cookieParser());
 

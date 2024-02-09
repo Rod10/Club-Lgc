@@ -18,6 +18,7 @@ module.exports = app => {
   app.instance.get("/session/list", ctrl.session);
   app.instance.get("/session/new", ctrl.getAddSession);
   app.instance.post("/session/new", upload.fields([{name: "session", maxCount: 1}]), ctrl.postAddSession);
+  app.instance.get("/session/:id/view", ctrl.viewSession);
 
   app.instance.get("/piste/list", ctrl.piste);
   app.instance.get("/piste/new", ctrl.getAddPiste);

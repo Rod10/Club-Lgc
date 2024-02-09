@@ -1,5 +1,4 @@
 const React = require("react");
-const PropTypes = require("prop-types");
 
 const NewBaseNavbar = require("../newbasenavbar.js");
 const Links = require("../../../express/constants/links.js");
@@ -25,10 +24,12 @@ class NewNavbar extends React.Component {
     this.setState(prevstate => ({opened: !prevstate.opened}));
   }
 
+  // eslint-disable-next-line class-methods-use-this
   _renderBrandContent() {
     return null;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   _renderModule(edwinModule) {
     const actions = edwinModule.routes.reduce((acc, route) => {
       const href = route.query
@@ -47,7 +48,7 @@ class NewNavbar extends React.Component {
 
     return <div key={`menu-label-${title}`}>
       <p className="menu-label">
-        {img && <img src={img} />}
+        {img && <img src={img} alt="image" />}
         {title}
       </p>
       <ul className={"menu-list marged"}>
@@ -66,7 +67,7 @@ class NewNavbar extends React.Component {
 
     return <a href={this.base}>
       <figure>
-        <img className="logo ml-4 mt-5 mb-4" src={logo} />
+        <img className="logo ml-4 mt-5 mb-4" src={logo} alt="logo" />
       </figure>
     </a>;
   }
@@ -97,13 +98,5 @@ class NewNavbar extends React.Component {
   }
 }
 NewNavbar.displayName = "NewNavbar";
-NewNavbar.propTypes = {
-  society: PropTypes.object,
-  user: PropTypes.object,
-};
-NewNavbar.defaultProps = {
-  society: undefined,
-  user: undefined,
-};
 
 module.exports = NewNavbar;

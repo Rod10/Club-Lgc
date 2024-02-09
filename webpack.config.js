@@ -18,7 +18,6 @@ const config = {
     "sessionlist": `${VIEWS}/sessionlist.js`,
     "sessioncreation": `${VIEWS}/sessioncreation.js`,
     "pistecreation": `${VIEWS}/pistecreation.js`,
-    "pisteview": `${VIEWS}/pisteview.js`,
   },
   output: {
     path: path.resolve(__dirname, "dist", "public", "js"),
