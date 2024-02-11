@@ -34,51 +34,53 @@ const getRandomInt = () => Math.floor(Math.random() * graphColor.length);
 module.exports = () => ({
   async index(req, res) {
     const lastSession = await sessionSrv.getLast();
-
     const data = {
-      piste: lastSession.piste,
-      session: lastSession.data,
+      piste: lastSession?.piste,
+      session: lastSession?.data,
       page: "session",
     };
 
-    data.session.tours = data.session["Trainning"].map(result => parseInt(result.Tour, 10)).reduce(
-      (accumulator, currentValue) => accumulator + currentValue,
-      0,
-    );
+    if (lastSession) {
+      data.session.tours = data.session["Trainning"].map(result => parseInt(result.Tour, 10))
+        .reduce(
+          (accumulator, currentValue) => accumulator + currentValue,
+          0,
+        );
 
-    const notifs = [];
-    for (const result of data.session["Trainning"]) {
-      notifs.push({
-        body: `${result.Pilote}`,
-        text: `Tours: ${result.Tour} - Meilleur Temps: ${result.Min}`,
-      });
-    }
-    data.notifs = notifs;
-
-    const graphs = [];
-    const pilotes = [];
-    const tours = [];
-
-    const sessionData = data.session.Trainning;
-    for (const d of sessionData) {
-      if (pilotes.includes(d.Pilote)) {
-        tours[pilotes.indexOf(d.Pilote)] += parseInt(d.Tour, 10);
-      } else {
-        pilotes.push(d.Pilote);
-        tours[pilotes.indexOf(d.Pilote)] = parseInt(d.Tour, 10);
+      const notifs = [];
+      for (const result of data.session["Trainning"]) {
+        notifs.push({
+          body: `${result.Pilote}`,
+          text: `Tours: ${result.Tour} - Meilleur Temps: ${result.Min}`,
+        });
       }
+      data.notifs = notifs;
+
+      const graphs = [];
+      const pilotes = [];
+      const tours = [];
+
+      const sessionData = data.session.Trainning;
+      for (const d of sessionData) {
+        if (pilotes.includes(d.Pilote)) {
+          tours[pilotes.indexOf(d.Pilote)] += parseInt(d.Tour, 10);
+        } else {
+          pilotes.push(d.Pilote);
+          tours[pilotes.indexOf(d.Pilote)] = parseInt(d.Tour, 10);
+        }
+      }
+
+      graphs.push({
+        type: "pie",
+        label: "Nombre de tours total par pilote",
+        labels: pilotes,
+        column: 1,
+        backgroundColor: pilotes.map(() => graphColor[getRandomInt()]),
+        data: tours,
+      });
+      data.graphs = graphs;
     }
-
-    graphs.push({
-      type: "pie",
-      label: "Nombre de tours total par pilote",
-      labels: pilotes,
-      column: 1,
-      backgroundColor: pilotes.map(() => graphColor[getRandomInt()]),
-      data: tours,
-    });
-    data.graphs = graphs;
-
+    console.log(data);
     const navbar = renderSrv.navbar(res.locals);
     const content = renderSrv.homepage(data);
 

@@ -16,9 +16,16 @@ class Homepage extends React.Component {
   constructor(props) {
     super(props);
 
+    const piste = props.piste ? props.piste : {
+      path: "",
+      tours: 0,
+    };
+
+    const session = props.session ? props.session : {tours: 0};
+
     this.state = {
-      piste: props.piste,
-      session: props.session,
+      piste,
+      session,
     };
     this.charts = [];
     if (this.props.graphs) {
