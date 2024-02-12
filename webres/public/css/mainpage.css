@@ -1,0 +1,74 @@
+.card_header{
+    height: 250px;
+    /*position: relative;*/
+}
+
+#card_header_caroussel{
+    height: 250px;
+}
+
+#card_img{
+    height: 250px;
+    background-size: cover;
+    background-position-x: right;
+    background-position-y: top;
+    /*background: no-repeat right top;*/
+    width: 100%;
+    position: absolute;
+}
+
+.card_header:hover .card_hover {
+    opacity: 1;
+}
+
+.card_header:hover .card_img{
+    opacity: 0.3;
+}
+
+.card_img{
+    height: 250px;
+    background-size: cover;
+    background-position-x: right;
+    background-position-y: top;
+    /*background: no-repeat right top;*/
+    width: 100%;
+    position: absolute;
+}
+
+.card_hover{
+    height: 250px;
+    width: 100%;
+    background-size: cover;
+    opacity: 0;
+    transition: opacity .3s;
+    position: absolute;
+    background-position-x: right;
+}
+
+.card_icon {
+    width: 75px;
+    height: 75px;
+    position: absolute;
+    z-index: 10;
+    background-size: cover;
+}
+
+.card:hover {
+    box-shadow: 0 0 8px black;
+}
+
+.wheelequip{
+    display: inline;
+}
+
+#farmloot{
+    margin-top: 1%;
+    margin-left: 1%;
+}
+table{
+    margin-top: 1%;
+    margin-left: 1%;
+}
+table tr td{
+    border: 1px solid black;
+}
