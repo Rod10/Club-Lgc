@@ -2,7 +2,7 @@ const React = require("react");
 const ReactDOMServer = require("react-dom/server.js");
 
 const NavBar = require("../../react/components/edwin/newnavbar.js");
-const HomePage = require("../../react/components/homepage/newhomepage.js");
+const HomePage = require("../../react/components/homepage/homepage.js");
 const PisteList = require("../../react/components/pistelist.js");
 const PisteCreation = require("../../react/components/pistecreation.js");
 

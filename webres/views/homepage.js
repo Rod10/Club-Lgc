@@ -1,11 +1,8 @@
 /* global React ReactDOM */
 
-const Homepage = require("../../react/components/homepage/newhomepage.js");
+const HomePage = require("../../react/components/homepage/homepage.js");
 
 ReactDOM.hydrate(
-  React.createElement(Homepage, {
-    ...window.data,
-    ...window.edwinData,
-  }),
+  React.createElement(HomePage, {...window.data}),
   document.getElementById("reactRoot"),
 );

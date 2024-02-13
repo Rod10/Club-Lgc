@@ -2,6 +2,7 @@
 const path = require("path");
 const fs = require("fs");
 const {glob} = require("glob");
+const hbs = require("hbs");
 
 module.exports = class Router {
   constructor(app) {
@@ -13,11 +14,9 @@ module.exports = class Router {
       middlewares: {},
     };
 
-    // this.loadModels();
     this.loadViews();
     this.loadControllers();
     this.loadRoutes();
-    // this.loadMiddlewares();
   }
 
   loadViews() {
@@ -29,21 +28,13 @@ module.exports = class Router {
     });
 
     this.app.instance.set("views", views);
+    /* eslint-disable no-invalid-this */
+    hbs.registerHelper("section", function section(name, options) {
+      if (!this._sections) this._sections = {};
+      this._sections[name] = options.fn(this);
+      return null;
+    });
   }
-
- // loadModels() {
- //   glob(path.join(__dirname, "../models") + "/**/model.js", {}, (err, files) => {
- //     files.forEach(file => {
- //       let parts = file.split("/");
- //       let name = parts[parts.length - 2];
-
- //       this.app.api.models[name] = new Datastore({
- //         filename: "bdd/"+name+".db",
- //         autoload: true
- //       });
- //     });
- //   });
- // }
 
   loadControllers() {
     glob(`${path.join(__dirname, "../api")}/**/controller.js`)
@@ -62,12 +53,6 @@ module.exports = class Router {
   }
 
   loadRoutes() {
-    // glob(`${path.join(__dirname, "../api")}/**/routes.js`, {}, (err, files) => {
-    //   console.log(files);
-    //   files.forEach(file => {
-    //     const routes = require(file)(this.app);
-    //   });
-    // });
     glob(`${path.join(__dirname, "../api")}/**/routes.js`)
       .then(files => {
         files.forEach(file => {

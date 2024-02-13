@@ -10,6 +10,9 @@
     <script type="text/javascript" nonce="{{nonce}}">
         window.data = {{{json data}}};
     </script>
+
+    <script type="text/javascript" src="/js/newnavbar.js?t={{{preventCache}}}"></script>
+
     {{#each components}}
         <script type="text/javascript" src="/js/{{{this}}}.js?t={{{../preventCache}}}"></script>
     {{/each}}

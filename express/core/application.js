@@ -45,14 +45,7 @@ module.exports = class Application {
     this.instance.use(bodyParser.json());
     this.instance.use(bodyParser.urlencoded({extended: true}));
     this.instance.set("view engine", "hbs");
-    // this.instance.set("views", path.join(__dirname, "src/html"));
 
-    // view engine setup
-    hbs.registerHelper("section", (name, options) => {
-      if (!this._sections) this._sections = {};
-      this._sections[name] = options.fn(this);
-      return null;
-    });
     hbs.registerHelper("log", data => {
       console.log(data);
     });

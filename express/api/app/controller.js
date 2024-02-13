@@ -80,7 +80,6 @@ module.exports = () => ({
       });
       data.graphs = graphs;
     }
-    console.log(data);
     const navbar = renderSrv.navbar(res.locals);
     const content = renderSrv.homepage(data);
 
