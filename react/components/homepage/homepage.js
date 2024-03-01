@@ -2,19 +2,19 @@ const React = require("react");
 const PropTypes = require("prop-types");
 
 const {
-    Chart, CategoryScale,
-    LinearScale,
-    BarController,
-    BarElement,
-    registerables,
+  Chart, CategoryScale,
+  LinearScale,
+  BarController,
+  BarElement,
+  registerables,
 } = require("chart.js");
 const Title = require("../bulma/title.js");
 const Columns = require("../bulma/columns.js");
 const Column = require("../bulma/column.js");
 
 class Homepage extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
         const piste = props.piste ? props.piste : {
             path: "",
@@ -117,64 +117,66 @@ class Homepage extends React.Component {
         </div>;
     }
 
-    render() {
-        return <div className="body-content">
-            <Columns>
-                <Column size={Column.Sizes.full}>
-                    <img src={this.state.piste.path} alt="Image de la piste" />
-                </Column>
-            </Columns>
-            <Columns>
-                <Column size={Column.Sizes.half}>
-                    <div>
-                        <p>Nombres de dalles: {this.state.piste.dalles}</p>
+  render() {
+    return <div className="body-content">
+      <Columns>
+        <Column size={Column.Sizes.full}>
+          <img src={this.state.piste.path} alt="Image de la piste" />
+        </Column>
+      </Columns>
+      <Columns>
+        <Column size={Column.Sizes.half}>
+          <div>
+            <p>Nombres de dalles: {this.state.piste.dalles}</p>
+          </div>
+        </Column>
+        <Column size={Column.Sizes.half}>
+          <div>
+            <p>Nombres de tours effectuer: {this.state[this.props.page].tours}</p>
+          </div>
+        </Column>
+      </Columns>
+      <Columns>
+        <Column size={Column.Sizes.oneThird}>
+          <article className="tile is-child box">
+            {this._renderNotif()}
+          </article>
+        </Column>
+        <Column size={Column.Sizes.twoThirds}>
+          <div className="is-flex graph-container">
+            {this.props.graphs && this.props.graphs.length > 0
+                && this.props.graphs.map(graph => <div
+                  key={graph.label}
+                  className={`is-${graph.column} is-flex-grow-${graph.column}`}
+                >
+                  <div className="pr-2 pb-2">
+                    <div className={"graph-box"}>
+                      <Title size={5}>{graph.label}</Title>
+                      <div className="is-relative">
+                        <canvas id="chart" ref={this.charts[graph.label]} />
+                      </div>
                     </div>
-                </Column>
-                <Column size={Column.Sizes.half}>
-                    <div>
-                        <p>Nombres de tours effectuer: {this.state[this.props.page].tours}</p>
-                    </div>
-                </Column>
-            </Columns>
-            <Columns>
-                <Column size={Column.Sizes.oneThird}>
-                    <article className="tile is-child box">
-                        {this._renderNotif()}
-                    </article>
-                </Column>
-                <Column size={Column.Sizes.twoThirds}>
-                    <div className="is-flex graph-container">
-                        {this.props.graphs && this.props.graphs.length > 0
-                            && this.props.graphs.map(graph => <div
-                                key={graph.label}
-                                className={`is-${graph.column} is-flex-grow-${graph.column}`}
-                            >
-                                <div className="pr-2 pb-2">
-                                    <div className={"graph-box"}>
-                                        <Title size={5}>{graph.label}</Title>
-                                        <div className="is-relative">
-                                            <canvas id="chart" ref={this.charts[graph.label]} />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>)}
-                    </div>
-                </Column>
-            </Columns>
-        </div>;
-    }
+                  </div>
+                </div>)}
+          </div>
+        </Column>
+      </Columns>
+    </div>;
+  }
 }
 
 Homepage.displayName = "Homepage";
 Homepage.propTypes = {
-    page: PropTypes.string.isRequired,
-    piste: PropTypes.object.isRequired,
-    session: PropTypes.object.isRequired,
-    notifs: PropTypes.array,
-    graphs: PropTypes.array,
+  page: PropTypes.string.isRequired,
+  piste: PropTypes.object,
+  session: PropTypes.object,
+  notifs: PropTypes.array,
+  graphs: PropTypes.array,
 };
 Homepage.defaultProps = {
-    notifs: undefined,
-    graphs: undefined,
+  piste: undefined,
+  session: undefined,
+  notifs: undefined,
+  graphs: undefined,
 };
 module.exports = Homepage;

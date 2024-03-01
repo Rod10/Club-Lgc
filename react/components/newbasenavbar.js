@@ -2,10 +2,10 @@ const React = require("react");
 const PropTypes = require("prop-types");
 
 class NewBaseNavbar extends React.Component {
-  static _renderLogo(src, alt) {
+  static _renderLogo(src, logoTitle) {
     return <img
       src={src}
-      alt={alt || "Edwin"}
+      alt={logoTitle || "Club-name"}
       height={32}
     />;
   }

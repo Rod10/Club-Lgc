@@ -1,13 +1,13 @@
 const React = require("react");
 const PropTypes = require("prop-types");
 
-const Civilities = require("../../express/constants/civilities.js");
+const Config = require("../../config.json");
 
 class BaseNavbar extends React.Component {
-  static _renderLogo(src, alt) {
+  static _renderLogo(src) {
     return <img
       src={src}
-      alt={alt || "Edwin"}
+      alt={Config.clubName || "Club-name"}
       height={25}
     />;
   }

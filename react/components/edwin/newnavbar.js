@@ -1,4 +1,5 @@
 const React = require("react");
+const PropTypes = require("prop-types");
 
 const NewBaseNavbar = require("../newbasenavbar.js");
 const Links = require("../../../express/constants/links.js");
@@ -76,6 +77,7 @@ class NewNavbar extends React.Component {
     return (<div>
       <NewBaseNavbar
         base={this.base}
+        logoTitle={this.props.clubName}
         brandContent={this._renderBrandContent()}
         hasScrollBar
         scrollBarOpened={this.state.opened}
@@ -98,5 +100,6 @@ class NewNavbar extends React.Component {
   }
 }
 NewNavbar.displayName = "NewNavbar";
+NewNavbar.propTypes = {clubName: PropTypes.string.isRequired};
 
 module.exports = NewNavbar;

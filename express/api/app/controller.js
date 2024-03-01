@@ -182,11 +182,11 @@ module.exports = () => ({
       const sessionData = session.data.Trainning;
       for (const sd of sessionData) {
         if (datasets.find(d => d.label === sd.Pilote)) {
-          datasets.find(d => d.label === sd.Pilote).data.push({y: sd.Min, x: 0});
+          datasets.find(d => d.label === sd.Pilote).data.push({y: sd.Min, x: df(session.creationDate, "dd/mm/yyyy")});
         } else {
           datasets.push({
             label: sd.Pilote,
-            data: [{y: sd.Min, x: 0}],
+            data: [{y: sd.Min, x: df(session.creationDate, "dd/mm/yyyy")}],
             borderColor: graphColor[getRandomInt()],
           });
         }
@@ -197,7 +197,7 @@ module.exports = () => ({
       label: "Meilleurs tour par session et par pilote",
       column: 2,
       data: {
-        labels: piste.session.map(result => df(result.creationDate, "dd/mm/yyyy")),
+        labels: pilotes,
         datasets,
       },
       options: {
@@ -217,14 +217,23 @@ module.exports = () => ({
               unit: "seconds",
               tooltipFormat: "HH:mm:ss",
               displayFormats: {"seconds": "HH:mm:ss"},
-              unitStepSize: 30,
+              unitStepSize: 1,
+            },
+          },
+          x: {
+            type: "time",
+            time: {
+              parser: "dd/mm/yyyy",
+              unit: "days",
+              tooltipFormat: "dd/mm/yyyy",
+              displayFormats: {"days": "dd/mm/yyyy"},
+              unitStepSize: 1,
             },
           },
         },
         elements: {line: {tension: 0.5}},
       },
-    }); */
-    data.graphs = graphs;
+    });*/
 
     const navbar = renderSrv.navbar(res.locals);
     const content = renderSrv.homepage(data);

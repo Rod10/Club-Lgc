@@ -1,5 +1,6 @@
 const moment = require("moment");
 const multer = require("multer");
+const Config = require("../../../../config.json");
 
 const Storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -14,6 +15,12 @@ const upload = multer({storage: Storage});
 
 module.exports = app => {
   const ctrl = app.api.controllers.app;
+
+  app.instance.use("/", (req, res, next) => {
+    res.locals.clubName = Config.clubName;
+    next();
+  });
+
   app.instance.get("/", ctrl.index);
   app.instance.get("/session/list", ctrl.session);
   app.instance.get("/session/new", ctrl.getAddSession);
