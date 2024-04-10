@@ -77,33 +77,40 @@ class SessionCreation extends React.Component {
   }
 
   _renderInfos() {
-    return <div className="is-flex">
-      <div className="mr-3">
-        <div className="field">
-          <div className="select is-fullwidth">
-            <select
-              name="piste"
-              defaultValue={"default"}
-              data-list="piste"
-              onChange={this.handlePisteChange}
-            >
-              <option
-                key="default"
-                value="default"
-              >
-                Choississez une piste
-              </option>;
-              {this.props.pistes.rows.map(piste => <option
-                key={piste.id}
-                value={`${piste.id}`}
-              >
-                {`${piste.id}`}
-              </option>)}
-            </select>
+    return <Columns>
+      <Column size={Column.Sizes.half}>
+        <div className="is-flex">
+          <div className="mr-3">
+            <div className="field">
+              <div className="select is-fullwidth">
+                <select
+                  name="piste"
+                  defaultValue={"default"}
+                  data-list="piste"
+                  onChange={this.handlePisteChange}
+                >
+                  <option
+                    key="default"
+                    value="default"
+                  >
+                    Choississez une piste
+                  </option>;
+                  {this.props.pistes.rows.map(piste => <option
+                    key={piste.id}
+                    value={`${piste.id}`}
+                  >
+                    {`${piste.id}`}
+                  </option>)}
+                </select>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>;
+      </Column>
+      {this.state.piste && <Column size={Column.Sizes.half}>
+        <img src={this.state.piste.path} alt="Image de la piste"/>
+      </Column>}
+    </Columns>;
   }
 
   _renderConfirmations() {
