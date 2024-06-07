@@ -102,6 +102,6 @@ module.exports = class Application {
   }
 
   start() {
-    this.server.listen(config.local.port);
+    this.server.listen(3000);
   }
 };

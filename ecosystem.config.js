@@ -2,7 +2,7 @@ const config = {
   "apps": [
     {
       "name": "club-LGC",
-      "script": "./express/www",
+      "script": "./express/main.js",
       "instances": 1,
       "wait_ready": true,
       "env": {
