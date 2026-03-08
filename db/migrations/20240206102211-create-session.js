@@ -15,7 +15,13 @@ module.exports = {
       },
       type: Sequelize.INTEGER(20),
     },
-    DATA: {type: Sequelize.TEXT},
+    SESSION: {type: Sequelize.LONGTEXT},
+    TRANSPONDERS: {type: Sequelize.LONGTEXT},
+    LAPS: {type: Sequelize.LONGTEXT},
+    SESSION_DATE: {
+      allowNull: false,
+      type: Sequelize.DATE,
+    },
     CREATION_DATE: {
       allowNull: false,
       type: Sequelize.DATE,

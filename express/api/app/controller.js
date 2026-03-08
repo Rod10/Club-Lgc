@@ -34,50 +34,34 @@ const getRandomInt = () => Math.floor(Math.random() * graphColor.length);
 module.exports = () => ({
   async index(req, res) {
     const lastSession = await sessionSrv.getLast();
+    const formatData = await sessionSrv.formatData(lastSession.id);
     const data = {
       piste: lastSession?.piste,
-      session: lastSession?.data,
+      session: formatData,
       page: "session",
     };
 
     if (lastSession) {
-      data.session.tours = data.session["Trainning"].map(result => parseInt(result.Tour, 10))
-        .reduce(
-          (accumulator, currentValue) => accumulator + currentValue,
-          0,
-        );
 
       const notifs = [];
-      for (const result of data.session["Trainning"]) {
+
+      for (const transponder of formatData.data) {
         notifs.push({
-          body: `${result.Pilote}`,
-          text: `Tours: ${result.Tour} - Meilleur Temps: ${result.Min}`,
+          body: `${transponder.DisplayName} - ${transponder.Pilot.Nickname}`,
+          text: `Tours: ${transponder.totalLaps} - Meilleur Temps: ${transponder.normal.bestLap}`,
         });
       }
       data.notifs = notifs;
 
-      const graphs = [];
-      const pilotes = [];
-      const tours = [];
-
-      const sessionData = data.session.Trainning;
-      for (const d of sessionData) {
-        if (pilotes.includes(d.Pilote)) {
-          tours[pilotes.indexOf(d.Pilote)] += parseInt(d.Tour, 10);
-        } else {
-          pilotes.push(d.Pilote);
-          tours[pilotes.indexOf(d.Pilote)] = parseInt(d.Tour, 10);
-        }
-      }
-
-      graphs.push({
+      const graphs = {};
+      graphs["allLaps"] = {
         type: "pie",
         label: "Nombre de tours total par pilote",
-        labels: pilotes,
+        labels: formatData.data.map(transponder => transponder.DisplayName),
         column: 1,
-        backgroundColor: pilotes.map(() => graphColor[getRandomInt()]),
-        data: tours,
-      });
+        backgroundColor: formatData.data.map(transponder => transponder.DisplayName).map(() => graphColor[getRandomInt()]),
+        data: formatData.data.map(transponder => transponder.totalLaps),
+      }
       data.graphs = graphs;
     }
     const navbar = renderSrv.navbar(res.locals);
@@ -251,18 +235,14 @@ module.exports = () => ({
   },
 
   async postAddSession(req, res) {
-    const trainingFileName = req.files["session"][0].filename;
-    const data = await fs.readFile(`data/session/${trainingFileName}`, "binary");
-    const json = xml2json.default(data);
-    const jsonData = json["WINDEV_TABLE"];
-    await sessionSrv.create(req.body, jsonData);
+    const exportFileName = req.files["session"][0].filename;
+    const data = await fs.readFile(`data/session/${exportFileName}`, "utf-8");
+    const sessionDataJson = JSON.parse(data.toString());
+    sessionDataJson.pisteId = req.body.piste;
+    const session = await sessionSrv.create(sessionDataJson);
     const piste = await pisteSrv.getById(req.body.piste);
-    const initialValue = 0;
-    const tours = jsonData["Trainning"].map(result => parseInt(result.Tour, 10)).reduce(
-      (accumulator, currentValue) => accumulator + currentValue,
-      initialValue,
-    );
-    piste.tours += tours;
+    const sessionData = await sessionSrv.formatData(session.id);
+    piste.tours += sessionData.totalLaps;
     piste.save();
     res.redirect("/session/list");
   },

@@ -12,16 +12,42 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER(20),
       allowNull: true,
     },
-    data: {
+    session: {
       type: DataTypes.TEXT,
       get() {
-        const val = this.getDataValue("data");
+        const val = this.getDataValue("session");
         if (!val || !val.length) return {};
         return JSON.parse(val);
       },
       set(val) {
-        this.setDataValue("data", JSON.stringify(val));
+        this.setDataValue("session", JSON.stringify(val));
       },
+    },
+    transponders: {
+      type: DataTypes.TEXT,
+      get() {
+        const val = this.getDataValue("transponders");
+        if (!val || !val.length) return {};
+        return JSON.parse(val);
+      },
+      set(val) {
+        this.setDataValue("transponders", JSON.stringify(val));
+      },
+    },
+    laps: {
+      type: DataTypes.TEXT,
+      get() {
+        const val = this.getDataValue("laps");
+        if (!val || !val.length) return {};
+        return JSON.parse(val);
+      },
+      set(val) {
+        this.setDataValue("laps", JSON.stringify(val));
+      },
+    },
+    sessionDate: {
+      type: DataTypes.DATE,
+      allowNull: false,
     },
     creationDate: {
       type: DataTypes.DATE,
