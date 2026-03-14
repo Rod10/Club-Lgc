@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 const {Session} = require("../models/index.js");
 const {logger} = require("./logger.js");
+const {durationToMs, msToDuration} = require("./utils.js");
 
 const sessionsSrv = {};
 
@@ -48,64 +49,21 @@ sessionsSrv.create = (data) => {
   });
 };
 
-const durationToMs = duration => {
-  const match = duration.match(/^(\d+):(\d+):(\d+(?:\.\d+)?)$/);
-  if (!match) throw new Error("Invalid duration format");
-
-  const [, h, m, s] = match;
-
-  return (
-      Number(h) * 3600000 +
-      Number(m) * 60000 +
-      Math.round(Number(s) * 1000)
-  );
-}
-
-const msToDuration = ms => {
-  const hours = Math.floor(ms / 3600000);
-  ms %= 3600000;
-
-  const minutes = Math.floor(ms / 60000);
-  ms %= 60000;
-
-  const seconds = Math.floor(ms / 1000);
-  const milliseconds = ms % 1000;
-
-  const hh = String(hours).padStart(2, "0");
-  const mm = String(minutes).padStart(2, "0");
-  const ss = String(seconds).padStart(2, "0");
-
-  const fraction = String(milliseconds).padStart(3, "0") + "0000";
-
-  return `${hh}:${mm}:${ss}.${fraction}`;
-}
-
 sessionsSrv.formatData = async sessionId => {
   logger.debug("Format data of session=[%s] for better viewing", sessionId);
   const session = await sessionsSrv.getById(sessionId);
-  /*
-    sessionData = [
-      {
-        "Id": 20,
-        "Uid": 25479,
-        "DisplayName": "25479",
-        "Pilot": {
-          "Id": 1,
-          "Nickname": "Mystery man",
-          "IsBuiltIn": true
-        },
-        "Laps": [...],
-        "TotalLaps": XXX,
-        "BestLap": "00:00:09.7670000",
-        "AverageLap": "00:00:09.7670000",
-        "TotalDrivingTime": "
-      },
-    ]
-   */
   const sessionData = {
     date: session.sessionDate,
-    ms: {},
-    normal: {},
+    ms: {
+      bestLap: null,
+      totalDrivingTime: null,
+      averageLap: null,
+    },
+    normal: {
+      bestLap: null,
+      totalDrivingTime: null,
+      averageLap: null,
+    },
     best: {
       transponder: {},
       lap: {},
@@ -142,6 +100,33 @@ sessionsSrv.formatData = async sessionId => {
   }
 
   return sessionData;
+}
+
+sessionsSrv.getAllByTrack = track => {
+  logger.debug("Get all Session by track=[%s]", track.id);
+
+  return Session.findAndCountAll({
+    where: {
+      pisteId: track.id,
+    }
+  })
+}
+
+sessionsSrv.getAllTimeBestSessionsByTrack = sessions => {
+  logger.debug("Get best session by track");
+
+  const laps = [];
+  for (const session of sessions.rows) {
+    for (const sessionLap of session.laps) {
+      laps.push({
+        ...sessionLap,
+        msDuration: durationToMs(sessionLap.Duration),
+        sessionId: session.id,
+      });
+    }
+  }
+  laps.sort((a, b) => a.msDuration - b.msDuration);
+  return sessions.rows.find(session => session.id === laps[0].sessionId);
 }
 
 module.exports = sessionsSrv;
