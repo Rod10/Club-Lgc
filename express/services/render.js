@@ -1,7 +1,7 @@
 const React = require("react");
 const ReactDOMServer = require("react-dom/server.js");
 
-const NavBar = require("../../react/components/edwin/newnavbar.js");
+const Navbar = require("../../react/components/edwin/newnavbar.js");
 const HomePage = require("../../react/components/homepage/homepage.js");
 const PisteList = require("../../react/components/pistelist.js");
 const PisteCreation = require("../../react/components/pistecreation.js");
@@ -11,7 +11,7 @@ const SessionCreation = require("../../react/components/sessioncreation.js");
 
 const renderSrv = [
   {name: "homepage", component: HomePage},
-  {name: "navbar", component: NavBar},
+  {name: "navbar", component: Navbar},
   {name: "pisteList", component: PisteList},
   {name: "pisteCreation", component: PisteCreation},
   {name: "sessionList", component: SessionList},

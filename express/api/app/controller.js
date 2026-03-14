@@ -1,89 +1,58 @@
 const fs = require("fs").promises;
 const df = require("dateformat");
-const xml2json = require("@hendt/xml2json");
+
+const carColors = require("../../constants/carcolors.js").carColors;
 
 const pisteSrv = require("../../services/piste.js");
 const renderSrv = require("../../services/render.js");
 const sessionSrv = require("../../services/session.js");
+const utilsSrv = require("../../services/utils.js");
+const {msToDuration, durationToMs} = require("../../services/utils");
 
-const graphColor = [
-  "#2b4957",
-  "#325464",
-  "#385f71",
-  "#3e6a7e",
-  "#45758b",
-  "#4b8098",
-  "#528ba5",
-  "#5d95af",
-  "#6a9db5",
-  "#77a6bc",
-  "#84aec2",
-  "#91b7c9",
-  "#9ec0cf",
-  "#abc8d6",
-  "#b8d1dc",
-  "#c5d9e3",
-  "#d3e2e9",
-  "#e0ebf0",
-  "#edf3f6",
-];
+const getSessionPage = async (req, res, session) => {
+  const formatData = await sessionSrv.formatData(session.id);
+  const allSessionsByTrack = await sessionSrv.getAllByTrack(session.piste);
+  const bestSession = await sessionSrv.getAllTimeBestSessionsByTrack(allSessionsByTrack);
+  const bestSessionFormatData = await sessionSrv.formatData(bestSession.id);
 
-const getRandomInt = () => Math.floor(Math.random() * graphColor.length);
+  const data = {
+    piste: session?.piste,
+    session: formatData,
+    bestSession: bestSessionFormatData,
+    page: "session",
+  };
+  const notifs = [];
+  for (const transponder of formatData.data) {
+    notifs.push({
+      body: `${transponder.DisplayName} - ${transponder.Pilot.Nickname}`,
+      text: `Tours: ${transponder.totalLaps} - Meilleur Temps: ${transponder.normal.bestLap}`,
+    });
+  }
+  data.notifs = notifs;
+  const graphs = {};
+  graphs["allLaps"] = {
+    type: "pie",
+    label: "Nombre de tours total par voiture",
+    labels: formatData.data.map(transponder => transponder.DisplayName),
+    column: 1,
+    backgroundColor: session.transponders.map(transponder => transponder.Uid).map(uid => carColors[uid]),
+    data: formatData.data.map(transponder => transponder.totalLaps),
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+    }
+  }
+  data.graphs = graphs;
+  const navbar = renderSrv.navbar(res.locals);
+  const content = renderSrv.homepage(data);
+  return res.render("generic", {navbar, content, data, components: ["homepage"]});
+}
 
 // eslint-disable-next-line max-lines-per-function
 module.exports = () => ({
   async index(req, res) {
     const lastSession = await sessionSrv.getLast();
-    const data = {
-      piste: lastSession?.piste,
-      session: lastSession?.data,
-      page: "session",
-    };
-
-    if (lastSession) {
-      data.session.tours = data.session["Trainning"].map(result => parseInt(result.Tour, 10))
-        .reduce(
-          (accumulator, currentValue) => accumulator + currentValue,
-          0,
-        );
-
-      const notifs = [];
-      for (const result of data.session["Trainning"]) {
-        notifs.push({
-          body: `${result.Pilote}`,
-          text: `Tours: ${result.Tour} - Meilleur Temps: ${result.Min}`,
-        });
-      }
-      data.notifs = notifs;
-
-      const graphs = [];
-      const pilotes = [];
-      const tours = [];
-
-      const sessionData = data.session.Trainning;
-      for (const d of sessionData) {
-        if (pilotes.includes(d.Pilote)) {
-          tours[pilotes.indexOf(d.Pilote)] += parseInt(d.Tour, 10);
-        } else {
-          pilotes.push(d.Pilote);
-          tours[pilotes.indexOf(d.Pilote)] = parseInt(d.Tour, 10);
-        }
-      }
-
-      graphs.push({
-        type: "pie",
-        label: "Nombre de tours total par pilote",
-        labels: pilotes,
-        column: 1,
-        backgroundColor: pilotes.map(() => graphColor[getRandomInt()]),
-        data: tours,
-      });
-      data.graphs = graphs;
-    }
-    const navbar = renderSrv.navbar(res.locals);
-    const content = renderSrv.homepage(data);
-
-    return res.render("generic", {navbar, content, data, components: ["homepage"]});
+    return getSessionPage(req, res, lastSession);
   },
 
   async piste(req, res) {
@@ -118,122 +87,107 @@ module.exports = () => ({
   },
 
   async viewPiste(req, res) {
-    const piste = await pisteSrv.getById(req.params.id);
-    const data = {piste};
-    data.page = "piste";
+    const track = await pisteSrv.getById(req.params.id);
+    const sessions = await sessionSrv.getAllByTrack(track);
+    const bestSession = await sessionSrv.getAllTimeBestSessionsByTrack(sessions);
+    const bestSessionFormatData = await sessionSrv.formatData(bestSession.id);
+
+    const sessionsData = {
+      ms: {
+        bestLap: null,
+        totalDrivingTime: null,
+        averageLap: null,
+      },
+      normal: {
+        bestLap: null,
+        totalDrivingTime: null,
+        averageLap: null,
+      },
+      best: {
+        transponder: {},
+        lap: {},
+      },
+      data: [],
+      totalLaps: 0,
+    };
+
+    const laps = [];
+    for (const session of sessions.rows) {
+      for (const sessionLap of session.laps) {
+        laps.push({
+          ...sessionLap,
+          msDuration: utilsSrv.durationToMs(sessionLap.Duration),
+          sessionId: session.id,
+        });
+      }
+    }
+    laps.sort((a, b) => a.msDuration - b.msDuration)
+
+    let transponders = [];
+    for (const session of sessions.rows) {
+      for (const transponder of session.transponders) {
+        if (!transponders.find(t => transponder.Id === t.Id)) {
+          transponders.push(transponder);
+        }
+      }
+    }
+
+    sessionsData.totalLaps = laps.length;
+    sessionsData.ms.bestLap = laps[0];
+    sessionsData.ms.totalDrivingTime = laps.reduce((accumulator, currentValue) => accumulator + currentValue.msDuration, 0);
+    sessionsData.ms.averageLap = Math.round(sessionsData.ms.totalDrivingTime / sessionsData.totalLaps);
+    sessionsData.normal.bestLap = msToDuration(sessionsData.ms.bestLap.msDuration);
+    sessionsData.normal.totalDrivingTime = msToDuration(sessionsData.ms.totalDrivingTime);
+    sessionsData.normal.averageLap = msToDuration(sessionsData.ms.averageLap);
+    sessionsData.best.lap = laps.find(lap => lap.Id === laps[0].Id);
+    sessionsData.best.transponder = transponders.find(transponder => transponder.Id === sessionsData.best.lap.TransponderId);
+
+    for (const transponder of transponders) {
+      const transponderData = transponder;
+      transponderData.laps = laps.filter(lap => lap.TransponderId === transponder.Id);
+      transponder.totalLaps = transponderData.laps.length;
+      transponderData.ms = {};
+      transponderData.normal = {};
+      transponderData.ms.bestLap = transponderData.laps[0];
+      transponderData.ms.totalDrivingTime = transponderData.laps.reduce((accumulator, currentValue) => accumulator + currentValue.msDuration, 0);
+      transponderData.ms.averageLap = Math.round(transponderData.ms.totalDrivingTime / transponder.totalLaps);
+      transponderData.normal.bestLap = msToDuration(transponderData.ms.bestLap.msDuration);
+      transponderData.normal.totalDrivingTime = msToDuration(transponderData.ms.totalDrivingTime);
+      transponderData.normal.averageLap = msToDuration(transponderData.ms.averageLap);
+      sessionsData.data.push(transponderData)
+    }
+
+    const data = {
+      piste: track,
+      session: sessionsData,
+      bestSession: bestSessionFormatData,
+      page: "track"
+    };
 
     const notifs = [];
-    for (const session of piste.session) {
-      const initialValue = 0;
-      const tours = session.data["Trainning"].map(result => parseInt(result.Tour, 10)).reduce(
-        (accumulator, currentValue) => accumulator + currentValue,
-        initialValue,
-      );
-      const temps = session.data["Trainning"].map(result => result.Min);
-      temps.sort();
-      const meilleurTemps = temps[0];
+    for (const session of sessions.rows) {
+      const sessionFormatData = await sessionSrv.formatData(session.id);
       notifs.push({
-        id: session.id,
-        body: df(session.creationDate, "dd/mm/yyyy"),
-        text: `Tours: ${tours} - Meilleur Temps: ${meilleurTemps}`,
+        body: `${df(new Date(sessionFormatData.date), "dd/mm/yyyy")}`,
+        text: `Tours: ${sessionFormatData.totalLaps} - Meilleur Temps: ${sessionFormatData.best.lap.Duration} par ${sessionFormatData.best.transponder.Pilot.Nickname}`,
       });
     }
     data.notifs = notifs;
-
-    const graphs = [];
-    graphs.push({
+    const graphs = {};
+    graphs["allLaps"] = {
       type: "pie",
-      label: "Nombre de tours par session",
-      labels: piste.session.map(result => df(result.creationDate, "dd/mm/yyyy")),
+      label: "Nombre de tours total par voiture",
+      labels: sessionsData.data.map(transponder => transponder.DisplayName),
       column: 1,
-      backgroundColor: piste.session.map(() => graphColor[getRandomInt()]),
-      data: piste.session.map(result => result.data["Trainning"].map(session => parseInt(session.Tour, 10)).reduce(
-        (accumulator, currentValue) => accumulator + currentValue,
-        0,
-      )),
-    });
-
-    const pilotes = [];
-    const tours = [];
-
-    for (const session of piste.session) {
-      const sessionData = session.data.Trainning;
-      for (const d of sessionData) {
-        if (pilotes.includes(d.Pilote)) {
-          tours[pilotes.indexOf(d.Pilote)] += parseInt(d.Tour, 10);
-        } else {
-          pilotes.push(d.Pilote);
-          tours[pilotes.indexOf(d.Pilote)] = parseInt(d.Tour, 10);
-        }
-      }
-    }
-
-    graphs.push({
-      type: "pie",
-      label: "Nombre de tours total par pilote",
-      labels: pilotes,
-      column: 1,
-      backgroundColor: pilotes.map(() => graphColor[getRandomInt()]),
-      data: tours,
-    });
-
-    const datasets = [];
-    for (const session of piste.session) {
-      const sessionData = session.data.Trainning;
-      for (const sd of sessionData) {
-        if (datasets.find(d => d.label === sd.Pilote)) {
-          datasets.find(d => d.label === sd.Pilote).data.push({y: sd.Min, x: df(session.creationDate, "dd/mm/yyyy")});
-        } else {
-          datasets.push({
-            label: sd.Pilote,
-            data: [{y: sd.Min, x: df(session.creationDate, "dd/mm/yyyy")}],
-            borderColor: graphColor[getRandomInt()],
-          });
-        }
-      }
-    }
-    /* graphs.push({
-      type: "line",
-      label: "Meilleurs tour par session et par pilote",
-      column: 2,
-      data: {
-        labels: pilotes,
-        datasets,
-      },
+      backgroundColor: transponders.map(transponder => transponder.Uid).map(uid => carColors[uid]),
+      data: sessionsData.data.map(transponder => transponder.totalLaps),
       options: {
         responsive: true,
-        plugins: {
-          legend: {position: "top"},
-          title: {
-            display: true,
-            text: "Pilotes",
-          },
-        },
-        scales: {
-          y: {
-            type: "time",
-            time: {
-              parser: "HH:mm:ss",
-              unit: "seconds",
-              tooltipFormat: "HH:mm:ss",
-              displayFormats: {"seconds": "HH:mm:ss"},
-              unitStepSize: 1,
-            },
-          },
-          x: {
-            type: "time",
-            time: {
-              parser: "dd/mm/yyyy",
-              unit: "days",
-              tooltipFormat: "dd/mm/yyyy",
-              displayFormats: {"days": "dd/mm/yyyy"},
-              unitStepSize: 1,
-            },
-          },
-        },
-        elements: {line: {tension: 0.5}},
-      },
-    });*/
+        maintainAspectRatio: true,
+      }
+    }
+
+    data.graphs = graphs;
 
     const navbar = renderSrv.navbar(res.locals);
     const content = renderSrv.homepage(data);
@@ -251,72 +205,20 @@ module.exports = () => ({
   },
 
   async postAddSession(req, res) {
-    const trainingFileName = req.files["session"][0].filename;
-    const data = await fs.readFile(`data/session/${trainingFileName}`, "binary");
-    const json = xml2json.default(data);
-    const jsonData = json["WINDEV_TABLE"];
-    await sessionSrv.create(req.body, jsonData);
+    const exportFileName = req.files["session"][0].filename;
+    const data = await fs.readFile(`data/session/${exportFileName}`, "utf-8");
+    const sessionDataJson = JSON.parse(data.toString());
+    sessionDataJson.pisteId = req.body.piste;
+    const session = await sessionSrv.create(sessionDataJson);
     const piste = await pisteSrv.getById(req.body.piste);
-    const initialValue = 0;
-    const tours = jsonData["Trainning"].map(result => parseInt(result.Tour, 10)).reduce(
-      (accumulator, currentValue) => accumulator + currentValue,
-      initialValue,
-    );
-    piste.tours += tours;
+    const sessionData = await sessionSrv.formatData(session.id);
+    piste.tours += sessionData.totalLaps;
     piste.save();
     res.redirect("/session/list");
   },
 
   async viewSession(req, res) {
-    const lastSession = await sessionSrv.getById(req.params.id);
-
-    const data = {
-      piste: lastSession.piste,
-      session: lastSession.data,
-      page: "session",
-    };
-
-    data.session.tours = data.session["Trainning"].map(result => parseInt(result.Tour, 10)).reduce(
-      (accumulator, currentValue) => accumulator + currentValue,
-      0,
-    );
-
-    const notifs = [];
-    for (const result of data.session["Trainning"]) {
-      notifs.push({
-        body: `${result.Pilote}`,
-        text: `Tours: ${result.Tour} - Meilleur Temps: ${result.Min}`,
-      });
-    }
-    data.notifs = notifs;
-
-    const graphs = [];
-    const pilotes = [];
-    const tours = [];
-
-    const sessionData = data.session.Trainning;
-    for (const d of sessionData) {
-      if (pilotes.includes(d.Pilote)) {
-        tours[pilotes.indexOf(d.Pilote)] += parseInt(d.Tour, 10);
-      } else {
-        pilotes.push(d.Pilote);
-        tours[pilotes.indexOf(d.Pilote)] = parseInt(d.Tour, 10);
-      }
-    }
-
-    graphs.push({
-      type: "pie",
-      label: "Nombre de tours total par pilote",
-      labels: pilotes,
-      column: 1,
-      backgroundColor: pilotes.map(() => graphColor[getRandomInt()]),
-      data: tours,
-    });
-    data.graphs = graphs;
-
-    const navbar = renderSrv.navbar(res.locals);
-    const content = renderSrv.homepage(data);
-
-    return res.render("generic", {navbar, content, data, components: ["homepage"]});
+    const session = await sessionSrv.getById(req.params.id);
+    return getSessionPage(req, res, session);
   },
 });

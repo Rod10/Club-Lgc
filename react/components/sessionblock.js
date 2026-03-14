@@ -12,7 +12,7 @@ class SessionBlock extends React.Component {
             <b>{df(this.props.session.creationDate, "dd/mm/yyyy")}</b>&nbsp;
           </div>
           <div>
-            <b>Tours: {this.props.session.tours}</b>
+            <b>Tours: {this.props.session.laps.length}</b>
           </div>
         </div>
         <div className="column">
@@ -22,13 +22,6 @@ class SessionBlock extends React.Component {
             title="Visualiser"
           >
             <span className="icon"><i className="fa fa-eye" /></span>
-          </a>
-          <a
-            href={`/session/${this.props.session.id}/delete`}
-            rel="noreferrer"
-            title="Supprimer"
-          >
-            <span className="icon"><i className="fa fa-trash" /></span>
           </a>
         </div>
       </div>

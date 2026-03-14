@@ -11,6 +11,7 @@
         window.data = {{{json data}}};
     </script>
 
+    <script type="text/javascript" src="/js/navbar.js?t={{{preventCache}}}"></script>
     {{#each components}}
         <script type="text/javascript" src="/js/{{{this}}}.js?t={{{../preventCache}}}"></script>
     {{/each}}

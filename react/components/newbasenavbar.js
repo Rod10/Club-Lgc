@@ -15,8 +15,8 @@ class NewBaseNavbar extends React.Component {
       return null;
     }
     return <div
-      className={opened ? "scrollbar-button opened" : "scrollbar-button"}
-      onClick={handle}
+        className={opened ? "scrollbar-button opened" : "scrollbar-button"}
+        onClick={handle}
     >
       <span />
       <span />
