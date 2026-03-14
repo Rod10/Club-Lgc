@@ -10,39 +10,41 @@ const utilsSrv = require("../../services/utils.js");
 const {msToDuration, durationToMs} = require("../../services/utils");
 
 const getSessionPage = async (req, res, session) => {
-  const formatData = await sessionSrv.formatData(session.id);
-  const allSessionsByTrack = await sessionSrv.getAllByTrack(session.piste);
-  const bestSession = await sessionSrv.getAllTimeBestSessionsByTrack(allSessionsByTrack);
-  const bestSessionFormatData = await sessionSrv.formatData(bestSession.id);
+  if (session) {
+    const formatData = await sessionSrv.formatData(session.id);
+    const allSessionsByTrack = await sessionSrv.getAllByTrack(session.piste);
+    const bestSession = await sessionSrv.getAllTimeBestSessionsByTrack(allSessionsByTrack);
+    const bestSessionFormatData = await sessionSrv.formatData(bestSession.id);
 
-  const data = {
-    piste: session?.piste,
-    session: formatData,
-    bestSession: bestSessionFormatData,
-    page: "session",
-  };
-  const notifs = [];
-  for (const transponder of formatData.data) {
-    notifs.push({
-      body: `${transponder.DisplayName} - ${transponder.Pilot.Nickname}`,
-      text: `Tours: ${transponder.totalLaps} - Meilleur Temps: ${transponder.normal.bestLap}`,
-    });
-  }
-  data.notifs = notifs;
-  const graphs = {};
-  graphs["allLaps"] = {
-    type: "pie",
-    label: "Nombre de tours total par voiture",
-    labels: formatData.data.map(transponder => transponder.DisplayName),
-    column: 1,
-    backgroundColor: session.transponders.map(transponder => transponder.Uid).map(uid => carColors[uid]),
-    data: formatData.data.map(transponder => transponder.totalLaps),
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
+    const data = {
+      piste: session?.piste,
+      session: formatData,
+      bestSession: bestSessionFormatData,
+      page: "session",
+    };
+    const notifs = [];
+    for (const transponder of formatData.data) {
+      notifs.push({
+        body: `${transponder.DisplayName} - ${transponder.Pilot.Nickname}`,
+        text: `Tours: ${transponder.totalLaps} - Meilleur Temps: ${transponder.normal.bestLap}`,
+      });
     }
+    data.notifs = notifs;
+    const graphs = {};
+    graphs["allLaps"] = {
+      type: "pie",
+      label: "Nombre de tours total par voiture",
+      labels: formatData.data.map(transponder => transponder.DisplayName),
+      column: 1,
+      backgroundColor: session.transponders.map(transponder => transponder.Uid).map(uid => carColors[uid]),
+      data: formatData.data.map(transponder => transponder.totalLaps),
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+      }
+    }
+    data.graphs = graphs;
   }
-  data.graphs = graphs;
   const navbar = renderSrv.navbar(res.locals);
   const content = renderSrv.homepage(data);
   return res.render("generic", {navbar, content, data, components: ["homepage"]});
