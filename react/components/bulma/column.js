@@ -36,7 +36,7 @@ class Column extends React.Component {
     if (this.props.multiline) className += " is-multiline";
     if (this.props.offset) className += ` ${this.props.offset}`;
     if (this.props.size) className += ` ${this.props.size}`;
-    return <div className={className}>
+    return <div className={className} style={this.props.style}>
       {this.props.children}
     </div>;
   }
