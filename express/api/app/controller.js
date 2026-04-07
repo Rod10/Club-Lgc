@@ -7,7 +7,7 @@ const pisteSrv = require("../../services/piste.js");
 const renderSrv = require("../../services/render.js");
 const sessionSrv = require("../../services/session.js");
 const utilsSrv = require("../../services/utils.js");
-const {msToDuration, durationToMs} = require("../../services/utils");
+const {msToDuration} = require("../../services/utils.js");
 
 const getSessionPage = async (req, res, session) => {
   const notifs = [];

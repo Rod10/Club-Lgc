@@ -13,6 +13,8 @@ const Title = require("../bulma/title.js");
 const Columns = require("../bulma/columns.js");
 const Column = require("../bulma/column.js");
 const {getElFromDataset} = require("../../utils/html");
+const {durationToMs, msToDuration} = require("../../../express/services/utils.js");
+const carColors = require("../../../express/constants/carcolors.js").carColors;
 
 class Homepage extends React.Component {
   constructor(props) {
@@ -145,20 +147,37 @@ class Homepage extends React.Component {
     _renderTableBody() {
       const {session, selectedCar} = this.state;
       let laps;
-      let car;
+      let transponder;
       let pilot;
+      let fastestLap = [];
       if (selectedCar) {
-        const data = session.data.find(transponder => transponder.Id === parseInt(selectedCar, 10));
+        const data = session.data.find(t => t.Id === parseInt(selectedCar, 10));
         laps = data.laps;
-        car = data.DisplayName;
-        pilot = data.Pilot.Nickname;
+        if (laps.length >= 1) {
+          transponder = data.DisplayName;
+          pilot = data.Pilot.Nickname;
+          fastestLap.push(laps.map(lap => ({
+            id: lap.Id,
+            duration: durationToMs(lap.Duration),
+          }))
+            .sort((a, b) => a.duration - b.duration)[0].id);
+        }
       } else {
         laps = session.laps;
+        for (const t of session.data) {
+        if (t.laps.length >= 1) {
+          fastestLap.push(t.laps.map(lap => ({
+            id: lap.Id,
+            duration: durationToMs(lap.Duration),
+          }))
+            .sort((a, b) => a.duration - b.duration)[0].id);
+          }
+        }
       }
-      return laps.map((lap, index) => <tr key={lap.Id}>
-        <td>{index + 1}</td>
-        <td>{car || session.data.find(transponder => transponder.Id === lap.TransponderId).DisplayName}</td>
-        <td>{pilot || session.data.find(transponder => transponder.Id === lap.TransponderId).Pilot.Nickname}</td>
+      return laps.length >= 1 && laps.map((lap, index) => <tr key={lap.Id} style={{backgroundColor: fastestLap.includes(lap.Id) ? carColors[session.data.find(t => t.Id === lap.TransponderId).Uid] : ""}}>
+        <td>{lap.Number}</td>
+        <td>{transponder || session.data.find(t => t.Id === lap.TransponderId).DisplayName}</td>
+        <td>{pilot || session.data.find(t => t.Id === lap.TransponderId).Pilot.Nickname}</td>
         <td>{lap.Duration}</td>
       </tr>);
     }
