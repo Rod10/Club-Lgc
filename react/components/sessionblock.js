@@ -9,7 +9,7 @@ class SessionBlock extends React.Component {
         <div className="column">
           <div>
             <a>{this.props.session.id}</a> •&nbsp;
-            <b>{df(this.props.session.creationDate, "dd/mm/yyyy")}</b>&nbsp;
+            <b>{df(this.props.session.sessionDate, "dd/mm/yyyy")}</b>&nbsp;
           </div>
           <div>
             <b>Tours: {this.props.session.laps.length}</b>

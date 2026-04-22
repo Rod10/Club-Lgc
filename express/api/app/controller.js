@@ -7,30 +7,37 @@ const pisteSrv = require("../../services/piste.js");
 const renderSrv = require("../../services/render.js");
 const sessionSrv = require("../../services/session.js");
 const utilsSrv = require("../../services/utils.js");
-const {msToDuration, durationToMs} = require("../../services/utils");
+const {msToDuration} = require("../../services/utils.js");
 
 const getSessionPage = async (req, res, session) => {
+  const notifs = [];
+  const graphs = {};
+  let data = {
+    page: "session",
+    notifs,
+    graphs,
+  };
+
   if (session) {
     const formatData = await sessionSrv.formatData(session.id);
     const allSessionsByTrack = await sessionSrv.getAllByTrack(session.piste);
     const bestSession = await sessionSrv.getAllTimeBestSessionsByTrack(allSessionsByTrack);
     const bestSessionFormatData = await sessionSrv.formatData(bestSession.id);
 
-    const data = {
+    data = {
       piste: session?.piste,
       session: formatData,
       bestSession: bestSessionFormatData,
       page: "session",
     };
-    const notifs = [];
     for (const transponder of formatData.data) {
       notifs.push({
         body: `${transponder.DisplayName} - ${transponder.Pilot.Nickname}`,
         text: `Tours: ${transponder.totalLaps} - Meilleur Temps: ${transponder.normal.bestLap}`,
+        carId: transponder.Id,
       });
     }
     data.notifs = notifs;
-    const graphs = {};
     graphs["allLaps"] = {
       type: "pie",
       label: "Nombre de tours total par voiture",
@@ -41,14 +48,14 @@ const getSessionPage = async (req, res, session) => {
       options: {
         responsive: true,
         maintainAspectRatio: true,
-      }
-    }
+      },
+    };
     data.graphs = graphs;
   }
   const navbar = renderSrv.navbar(res.locals);
   const content = renderSrv.homepage(data);
   return res.render("generic", {navbar, content, data, components: ["homepage"]});
-}
+};
 
 // eslint-disable-next-line max-lines-per-function
 module.exports = () => ({
@@ -116,20 +123,35 @@ module.exports = () => ({
     const laps = [];
     for (const session of sessions.rows) {
       for (const sessionLap of session.laps) {
-        laps.push({
-          ...sessionLap,
-          msDuration: utilsSrv.durationToMs(sessionLap.Duration),
-          sessionId: session.id,
-        });
+        if (!sessionLap.Discarded) {
+          laps.push({
+            ...sessionLap,
+            msDuration: utilsSrv.durationToMs(sessionLap.Duration),
+            sessionId: session.id,
+          });
+        }
       }
     }
-    laps.sort((a, b) => a.msDuration - b.msDuration)
+    laps.sort((a, b) => a.msDuration - b.msDuration);
 
-    let transponders = [];
+    const transponders = [];
+    const rawTransponders = [];
     for (const session of sessions.rows) {
-      for (const transponder of session.transponders) {
-        if (!transponders.find(t => transponder.Id === t.Id)) {
-          transponders.push(transponder);
+      for (const sessionTransponder of session.transponders) {
+        if (!transponders.find(t => sessionTransponder.Uid === t.uId)) {
+          transponders.push({
+            uId: sessionTransponder.Uid,
+            displayName: sessionTransponder.DisplayName,
+            id: [sessionTransponder.Id],
+            pilots: [sessionTransponder.Pilot],
+          });
+          rawTransponders.push(sessionTransponder);
+        } else {
+          const transponder = transponders.find(t => sessionTransponder.Uid === t.uId);
+          transponder.id.push(sessionTransponder.Id);
+          if (!transponder.pilots.find(pilot => pilot.Id === sessionTransponder.Pilot.Id)) {
+            transponder.pilots.push(sessionTransponder.Pilot);
+          }
         }
       }
     }
@@ -142,28 +164,28 @@ module.exports = () => ({
     sessionsData.normal.totalDrivingTime = msToDuration(sessionsData.ms.totalDrivingTime);
     sessionsData.normal.averageLap = msToDuration(sessionsData.ms.averageLap);
     sessionsData.best.lap = laps.find(lap => lap.Id === laps[0].Id);
-    sessionsData.best.transponder = transponders.find(transponder => transponder.Id === sessionsData.best.lap.TransponderId);
+    sessionsData.best.transponder = rawTransponders.find(rawTransponder => rawTransponder.Id === sessionsData.best.lap.TransponderId);
 
     for (const transponder of transponders) {
       const transponderData = transponder;
-      transponderData.laps = laps.filter(lap => lap.TransponderId === transponder.Id);
+      transponderData.laps = laps.filter(lap => transponder.id.includes(lap.TransponderId));
       transponder.totalLaps = transponderData.laps.length;
       transponderData.ms = {};
       transponderData.normal = {};
       transponderData.ms.bestLap = transponderData.laps[0];
       transponderData.ms.totalDrivingTime = transponderData.laps.reduce((accumulator, currentValue) => accumulator + currentValue.msDuration, 0);
       transponderData.ms.averageLap = Math.round(transponderData.ms.totalDrivingTime / transponder.totalLaps);
-      transponderData.normal.bestLap = msToDuration(transponderData.ms.bestLap.msDuration);
+      transponderData.normal.bestLap = msToDuration(transponderData.ms.bestLap);
       transponderData.normal.totalDrivingTime = msToDuration(transponderData.ms.totalDrivingTime);
       transponderData.normal.averageLap = msToDuration(transponderData.ms.averageLap);
-      sessionsData.data.push(transponderData)
+      sessionsData.data.push(transponderData);
     }
 
     const data = {
       piste: track,
       session: sessionsData,
       bestSession: bestSessionFormatData,
-      page: "track"
+      page: "track",
     };
 
     const notifs = [];
@@ -172,6 +194,7 @@ module.exports = () => ({
       notifs.push({
         body: `${df(new Date(sessionFormatData.date), "dd/mm/yyyy")}`,
         text: `Tours: ${sessionFormatData.totalLaps} - Meilleur Temps: ${sessionFormatData.best.lap.Duration} par ${sessionFormatData.best.transponder.Pilot.Nickname}`,
+        id: session.id,
       });
     }
     data.notifs = notifs;
@@ -179,16 +202,15 @@ module.exports = () => ({
     graphs["allLaps"] = {
       type: "pie",
       label: "Nombre de tours total par voiture",
-      labels: sessionsData.data.map(transponder => transponder.DisplayName),
+      labels: transponders.map(transponder => transponder.displayName),
       column: 1,
-      backgroundColor: transponders.map(transponder => transponder.Uid).map(uid => carColors[uid]),
+      backgroundColor: transponders.map(transponder => transponder.uId).map(uid => carColors[uid]),
       data: sessionsData.data.map(transponder => transponder.totalLaps),
       options: {
         responsive: true,
         maintainAspectRatio: true,
-      }
-    }
-
+      },
+    };
     data.graphs = graphs;
 
     const navbar = renderSrv.navbar(res.locals);

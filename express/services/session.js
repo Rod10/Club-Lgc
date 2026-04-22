@@ -38,7 +38,7 @@ sessionsSrv.getLast = () => {
  * @param {object} data.data
  * @returns {*}
  */
-sessionsSrv.create = (data) => {
+sessionsSrv.create = data => {
   logger.debug("Create session");
   return Session.create({
     pisteId: data.pisteId,
@@ -69,10 +69,16 @@ sessionsSrv.formatData = async sessionId => {
       lap: {},
     },
     data: [],
+    laps: [],
     totalLaps: 0,
   };
 
-  const sessionLaps = session.laps.map(a => ({id: a.Id, duration: durationToMs(a.Duration)})).sort((a, b) => a.duration - b.duration);
+  const sessionLaps = session.laps
+    .filter(lap => lap.Discarded === false)
+    .map(a => ({id: a.Id, duration: durationToMs(a.Duration)}))
+    .sort((a, b) => a.duration - b.duration);
+  sessionData.laps = session.laps
+    .filter(lap => lap.Discarded === false);
   sessionData.totalLaps = sessionLaps.length;
   sessionData.ms.bestLap = sessionLaps[0];
   sessionData.ms.totalDrivingTime = sessionLaps.reduce((accumulator, currentValue) => accumulator + currentValue.duration, 0);
@@ -85,7 +91,7 @@ sessionsSrv.formatData = async sessionId => {
 
   for (const transponder of session.transponders) {
     const transponderData = transponder;
-    transponderData.laps = session.laps.filter(lap => lap.TransponderId === transponder.Id);
+    transponderData.laps = session.laps.filter(lap => lap.TransponderId === transponder.Id && lap.Discarded === false);
     transponder.totalLaps = transponderData.laps.length;
     const laps = transponder.laps.map(a => durationToMs(a.Duration)).sort((a, b) => a - b);
     transponderData.ms = {};
@@ -96,21 +102,17 @@ sessionsSrv.formatData = async sessionId => {
     transponderData.normal.bestLap = msToDuration(transponderData.ms.bestLap);
     transponderData.normal.totalDrivingTime = msToDuration(transponderData.ms.totalDrivingTime);
     transponderData.normal.averageLap = msToDuration(transponderData.ms.averageLap);
-    sessionData.data.push(transponderData)
+    sessionData.data.push(transponderData);
   }
 
   return sessionData;
-}
+};
 
 sessionsSrv.getAllByTrack = track => {
   logger.debug("Get all Session by track=[%s]", track.id);
 
-  return Session.findAndCountAll({
-    where: {
-      pisteId: track.id,
-    }
-  })
-}
+  return Session.findAndCountAll({where: {pisteId: track.id}});
+};
 
 sessionsSrv.getAllTimeBestSessionsByTrack = sessions => {
   logger.debug("Get best session by track");
@@ -118,15 +120,17 @@ sessionsSrv.getAllTimeBestSessionsByTrack = sessions => {
   const laps = [];
   for (const session of sessions.rows) {
     for (const sessionLap of session.laps) {
-      laps.push({
-        ...sessionLap,
-        msDuration: durationToMs(sessionLap.Duration),
-        sessionId: session.id,
-      });
+      if (!sessionLap.Discarded) {
+        laps.push({
+          ...sessionLap,
+          msDuration: durationToMs(sessionLap.Duration),
+          sessionId: session.id,
+        });
+      }
     }
   }
   laps.sort((a, b) => a.msDuration - b.msDuration);
   return sessions.rows.find(session => session.id === laps[0].sessionId);
-}
+};
 
 module.exports = sessionsSrv;
