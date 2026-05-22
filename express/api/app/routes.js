@@ -1,6 +1,7 @@
 const moment = require("moment");
 const multer = require("multer");
 const Config = require("../../../../config.json");
+const authMid = require("../../middlewares/user.js");
 
 const Storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -21,6 +22,10 @@ module.exports = app => {
     next();
   });
 
+  app.instance.get("/login", ctrl.getLogin);
+  app.instance.post("/login", ctrl.postLogin);
+
+  app.instance.use(authMid.strict);
   app.instance.get("/", ctrl.index);
   app.instance.get("/session/list", ctrl.session);
   app.instance.get("/session/new", ctrl.getAddSession);

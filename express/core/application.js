@@ -102,6 +102,6 @@ module.exports = class Application {
   }
 
   start() {
-    this.server.listen(3000);
+    this.server.listen(3001);
   }
 };

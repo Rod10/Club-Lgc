@@ -11,6 +11,7 @@ const config = require("../utils/config.js").database[env];
 
 const Piste = require("./piste.js");
 const Session = require("./session.js");
+const User = require("./user.js");
 
 if (config.logging) {
   config.logging = data => logger.debug(data);
@@ -31,6 +32,7 @@ const db = {};
 [
   Piste,
   Session,
+  User,
 ].forEach(def => {
   const model = def(sequelize, Sequelize.DataTypes);
   db[model.name] = model;
