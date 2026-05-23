@@ -174,7 +174,7 @@ class Homepage extends React.Component {
           }
         }
       }
-      return laps.length >= 1 && laps.map((lap, index) => <tr key={lap.Id} style={{backgroundColor: fastestLap.includes(lap.Id) ? carColors[session.data.find(t => t.Id === lap.TransponderId).Uid] : ""}}>
+      return laps.length >= 1 && laps.map(lap => <tr key={lap.Id} style={{backgroundColor: fastestLap.includes(lap.Id) ? carColors[session.data.find(t => t.Id === lap.TransponderId).Uid] : ""}}>
         <td>{lap.Number}</td>
         <td>{transponder || session.data.find(t => t.Id === lap.TransponderId).DisplayName}</td>
         <td>{pilot || session.data.find(t => t.Id === lap.TransponderId).Pilot.Nickname}</td>
@@ -183,7 +183,7 @@ class Homepage extends React.Component {
     }
 
     _renderTimeTable() {
-      return <table className="table is-bordered is-fullwidth">
+      return <table className="table is-bordered is-fullwidth table-rounded">
         <thead>
           <tr>
             <th>N° Tour</th>

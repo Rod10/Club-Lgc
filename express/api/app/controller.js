@@ -3,11 +3,15 @@ const df = require("dateformat");
 
 const carColors = require("../../constants/carcolors.js").carColors;
 
+const cookieOptions = require("../../services/cookie.js");
 const pisteSrv = require("../../services/piste.js");
 const renderSrv = require("../../services/render.js");
 const sessionSrv = require("../../services/session.js");
+const tokenSrv = require("../../services/token.js");
 const utilsSrv = require("../../services/utils.js");
+const userSrv = require("../../services/user.js");
 const {msToDuration} = require("../../services/utils.js");
+const {SEE_OTHER} = require("../../utils/error.js");
 
 const getSessionPage = async (req, res, session) => {
   const notifs = [];
@@ -43,7 +47,9 @@ const getSessionPage = async (req, res, session) => {
       label: "Nombre de tours total par voiture",
       labels: formatData.data.map(transponder => transponder.DisplayName),
       column: 1,
-      backgroundColor: session.transponders.map(transponder => transponder.Uid).map(uid => carColors[uid]),
+      backgroundColor: session.transponders
+        .map(transponder => transponder.Uid)
+        .map(uid => carColors[uid]),
       data: formatData.data.map(transponder => transponder.totalLaps),
       options: {
         responsive: true,
@@ -59,6 +65,46 @@ const getSessionPage = async (req, res, session) => {
 
 // eslint-disable-next-line max-lines-per-function
 module.exports = () => ({
+  getLogin(req, res, next) {
+    try {
+      const query = new URLSearchParams(req.query).toString();
+      const data = renderSrv.userLogin({
+        passwordChanged: req.query.passwordChanged === "true",
+        query: query ? `?${query}` : "",
+      });
+
+      return res.render("login_society", {data});
+    } catch (err) {
+      console.log(err);
+      next(err);
+    }
+  },
+
+  async postLogin(req, res, next) {
+    try {
+      const user = await userSrv.login(req.body);
+      const token = tokenSrv.user(user);
+      res.cookie("token", token, cookieOptions);
+
+      res.redirect(SEE_OTHER, "/");
+    } catch (e) {
+      console.log(e);
+
+      const query = new URLSearchParams(req.query).toString();
+      const data = renderSrv.userLogin({
+        error: true,
+        username: req.body.username,
+        query: query ? `?${query}` : "",
+      });
+      res.render("login_society", {data});
+    }
+  },
+
+  getLogout(req, res, next) {
+    res.cookie("token", "", {expires: new Date()});
+    res.redirect(SEE_OTHER, "/");
+  },
+
   async index(req, res) {
     const lastSession = await sessionSrv.getLast();
     return getSessionPage(req, res, lastSession);

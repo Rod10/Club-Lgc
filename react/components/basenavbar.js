@@ -1,5 +1,7 @@
 const React = require("react");
 const PropTypes = require("prop-types");
+const Button = require("./bulma/button.js");
+const Icon = require("./bulma/icon.js");
 
 const Config = require("../../config.json");
 
@@ -22,6 +24,20 @@ class BaseNavbar extends React.Component {
 
   handleBurgerClick() {
     this.setState(prevState => ({active: prevState.active ? "" : "is-active"}));
+  }
+
+  _renderLogout() {
+    return <div className="navbar-item is-hidden-mobile">
+      <Button
+        label="Déconnexion"
+        icon={<Icon
+          icon="arrow-right-from-bracket"
+          faSize="lg"
+          size="big"
+        />}
+        href={this.props.hrefLogout || `${this.props.base}/logout`}
+      />
+    </div>;
   }
 
   _renderBrand() {
@@ -60,9 +76,7 @@ class BaseNavbar extends React.Component {
       Quitter
     </a>;
     if (this.props.user) {
-      const user = this.props.user;
       return <div className="navbar-item has-dropdown is-hoverable">
-        <a className="navbar-link">{`${Civilities[user.civility].short} ${user.firstName} ${user.lastName}`}</a>
         <div className="navbar-dropdown is-boxed">{quit}</div>
       </div>;
     }
@@ -76,7 +90,7 @@ class BaseNavbar extends React.Component {
       </div>}
       <div className="navbar-end">
         {this.props.navbarRight}
-        {this._renderUser()}
+        {this._renderLogout()}
       </div>
     </div>;
   }

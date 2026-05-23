@@ -1,4 +1,9 @@
 {
+  "jwt": {
+    "user": "YTzhUB5wMUHTLvUXxat7cgJsoUq3jQfMZjnTddxz+n61YlXUO0Pp/6DFzpASKrQ8",
+    "file": "GJ4amXaV98ey23czOlbr",
+    "confirmation": "Rz4nJcdzVqkNbBLgCf8ukk3GVDb5cy9GmHMmWx5MLDfEJoaqg8vLeZjkKdv668Zu"
+  },
   "dataPath": "./data",
   "clubName": "LGC-92",
   "database": {

@@ -9,6 +9,8 @@ const PisteCreation = require("../../react/components/pistecreation.js");
 const SessionList = require("../../react/components/sessionlist.js");
 const SessionCreation = require("../../react/components/sessioncreation.js");
 
+const UserLogin = require("../../react/components/userlogin.js");
+
 const renderSrv = [
   {name: "homepage", component: HomePage},
   {name: "navbar", component: Navbar},
@@ -16,6 +18,7 @@ const renderSrv = [
   {name: "pisteCreation", component: PisteCreation},
   {name: "sessionList", component: SessionList},
   {name: "sessionCreation", component: SessionCreation},
+  {name: "userLogin", component: UserLogin},
 ].reduce((acc, cur) => {
   acc[cur.name] = props => {
         // this is to reset react-beautiful-dnd context

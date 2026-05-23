@@ -73,21 +73,23 @@ h2 {
 a.link {
     color: var(--edwin);
     border-bottom: 0px solid #0000;
-    transition: all .2s;
+    transition: all 0.2s;
     cursor: pointer;
 }
 
 a.link:hover {
     border-bottom: 2px solid var(--edwin);
-    transition: all .2s;
+    transition: all 0.2s;
 }
 
 .white-svg {
-    filter: invert(100%) sepia(93%) saturate(27%) hue-rotate(39deg) brightness(107%) contrast(107%);
+    filter: invert(100%) sepia(93%) saturate(27%) hue-rotate(39deg) brightness(107%)
+    contrast(107%);
 }
 
 .dark-svg {
-    filter: invert(0%) sepia(8%) saturate(0%) hue-rotate(83deg) brightness(96%) contrast(106%);
+    filter: invert(0%) sepia(8%) saturate(0%) hue-rotate(83deg) brightness(96%)
+    contrast(106%);
 }
 
 /* --- Head --- */
@@ -100,7 +102,8 @@ a.link:hover {
     max-width: 30px;
     max-height: 30px;
     margin-right: 10px;
-    filter: invert(100%) sepia(93%) saturate(27%) hue-rotate(39deg) brightness(107%) contrast(107%);
+    filter: invert(100%) sepia(93%) saturate(27%) hue-rotate(39deg) brightness(107%)
+    contrast(107%);
     position: relative;
     top: 5px;
 }
@@ -139,7 +142,7 @@ a.link:hover {
     padding-left: 10px !important;
 }
 
-.newnavbar .navbar>.container {
+.newnavbar .navbar > .container {
     display: flex !important;
 }
 
@@ -224,9 +227,9 @@ a.link:hover {
     position: fixed;
     background-color: #006893;
     color: #fff;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, .35);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
     z-index: 1;
-    transition: all .5s;
+    transition: all 0.5s;
 }
 
 .scrollbareditor:not(.opened) {
@@ -249,7 +252,8 @@ a.link:hover {
 }
 
 .scrollbareditor .img img {
-    filter: invert(100%) sepia(93%) saturate(27%) hue-rotate(39deg) brightness(107%) contrast(107%);
+    filter: invert(100%) sepia(93%) saturate(27%) hue-rotate(39deg) brightness(107%)
+    contrast(107%);
     max-width: 30px;
     max-height: 30px;
     margin: auto;
@@ -258,7 +262,7 @@ a.link:hover {
 .scrollbar .menu-list a {
     color: #fff !important;
     padding: 10px;
-    transition: all .3s;
+    transition: all 0.3s;
 }
 
 .scrollbar .logo {
@@ -283,7 +287,7 @@ a.link:hover {
 @media screen and (min-width: 1224px) {
     .body-content {
         /* left: 330px; */
-        left: 28px;
+        left: 25px;
         width: calc(100vw - 10px);
         height: calc(100vh - 3.5em);
     }
@@ -352,11 +356,11 @@ a.link:hover {
 
 /* --- Burger Button --- */
 /* Si moins de 1224px */
-@media screen and (min-width: 1224px) {
+/* @media screen and (min-width: 1224px) {
     .scrollbar-button {
         display: none;
     }
-}
+}*/
 
 .scrollbar-button {
     margin: auto 20px auto 10px;
@@ -418,22 +422,22 @@ a.link:hover {
     display: inline-flex;
 }
 
-.operator-list .box .levels> :last-child {
+.operator-list .box .levels > :last-child {
     width: 1.5rem;
     height: 1.5rem;
     border-radius: 100%;
     background-color: #d5202f;
 }
 
-.operator-list .box .levels.is-valid> :last-child {
+.operator-list .box .levels.is-valid > :last-child {
     background-color: #00e010;
 }
 
-.operator-list .box .levels.is-nearly-expired> :last-child {
+.operator-list .box .levels.is-nearly-expired > :last-child {
     background-color: #ffe08a;
 }
 
-.operator-list .box .levels> :last-child>a {
+.operator-list .box .levels > :last-child > a {
     width: 100%;
     height: 100%;
     display: flex;
@@ -441,6 +445,16 @@ a.link:hover {
 
 @media screen and (min-width: 769px) {
     .operator-scrollblock {
+        overflow-x: hidden;
+        overflow-y: scroll;
+        height: calc(100vh - 330px);
+    }
+    .operation-scrollblock {
+        overflow-x: hidden;
+        overflow-y: scroll;
+        height: calc(100vh - 200px);
+    }
+    .operation-scrollblock-filter {
         overflow-x: hidden;
         overflow-y: scroll;
         height: calc(100vh - 330px);
@@ -529,7 +543,7 @@ table {
 }
 
 .is-edwin .box.panel-select.grey:not(.selected) {
-    background-color: whitesmoke
+    background-color: whitesmoke;
 }
 
 .panel-select {
@@ -585,11 +599,16 @@ table {
     border-color: #f1b3c4;
 }
 
+.specific table tbody tr td {
+    background-color: #fff !important;
+    border-color: #f1b3c4;
+}
+
 .electricity .title .title,
 .gas .title .title,
 .aipr .title .title,
 .caces .title .title {
-    margin-top: 1.75em
+    margin-top: 1.75em;
 }
 
 .selection {
@@ -620,7 +639,7 @@ table {
 }
 
 .slide-in {
-    animation: slide-in 0.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+    animation: slide-in 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
 /* ----------------------------------------------
@@ -650,4 +669,241 @@ table {
 
 .brief .steps-content {
     font-size: 0.9rem;
+}
+
+/*----------------- DOCUMENT BLOCK ------------------*/
+.document-box {
+    width: 100%;
+    padding: 10px;
+    margin: auto;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .etat {
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+
+    .content {
+        .name_date_wrapper {
+            display: flex;
+            justify-content: space-between;
+            .name_box {
+                display: flex;
+                flex-direction: column;
+            }
+            .row {
+                padding: 0px;
+                .label {
+                    flex-basis: content;
+                    padding: 0 10px 0 0;
+                }
+            }
+            .value {
+                flex-basis: content;
+            }
+        }
+    }
+
+    .row {
+        display: flex;
+        padding: 5px 0;
+        &.icons {
+            padding: 0;
+            align-items: center;
+            justify-content: flex-start;
+            .documents {
+                margin-right: 10px;
+            }
+            .row {
+                gap: 10px;
+            }
+        }
+        &.actions {
+            padding: 5px 0 0 0;
+            .action-wrapper {
+                gap: 10px;
+                display: flex;
+            }
+        }
+        &.date {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+
+    .label,
+    .value,
+    .date,
+    .commune {
+        flex-basis: 45%;
+    }
+
+    .documents,
+    .actions {
+        align-items: center;
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+    }
+
+    .icon {
+        font-size: 1.5em;
+        & i {
+            margin-right: 5px;
+            &.fa.fa-trash {
+                color: red;
+            }
+            &.fa.fa-eye {
+                color: lightskyblue;
+            }
+        }
+    }
+
+    a.disabled {
+        pointer-events: none;
+        opacity: 0.5;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .row {
+        flex-direction: column;
+        text-align: left;
+        flex-direction: row;
+    }
+
+    .documents,
+    .actions {
+        flex-direction: row;
+    }
+
+    .document-box {
+        .label,
+        .value,
+        .date,
+        .commune {
+            padding: 5px;
+            flex-basis: content;
+        }
+        & .content {
+            .name_date_wrapper {
+                flex-direction: column;
+            }
+        }
+    }
+}
+
+.doc-warning-box {
+    border: 2.5px solid #f00;
+    border-radius: 6px;
+}
+/*----------------- END DOCUMENT BLOCK ------------------*/
+
+/* Habilitations pages card*/
+
+.block.creation-operator,
+.block.contact-creation-operator,
+.block.habilitation-creation-operator,
+.block.identity-creation-operator,
+.block.entity-creation-operator,
+.block.droit-creation-operator,
+.block.is-etat-operator{
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 24px;
+    margin: 16px 0;
+    border: 1px solid #e5e7eb;
+    transition: box-shadow 0.3s ease;
+    width: 100%;
+    max-width: none;
+}
+
+.is-operatorcreation {
+    margin: 0;
+    padding: 0;
+}
+
+.head{
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 25px;
+}
+
+.column.is-narrow.is-btn-change-etat{
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 10px;
+    border: 1px solid #e5e7eb;
+    transition: box-shadow 0.3s ease;
+    max-width: 280px;
+    margin-top: -100px;
+    height: 60px;
+    margin-right: 1%;
+    margin-left: 38%;}
+
+
+
+.column.is-narrow.is-btn-change-etat.btn-create {
+    margin-left: 70%;
+    margin-top: 10px;
+
+}
+
+.is-created-state .column.is-narrow.is-btn-change-etat{
+    margin-top: 10px;
+    margin-left: 5%;
+}
+
+.is-created-state .column.is-new-change-design{
+    margin-top: 10px;
+    margin-left: -11px;
+}
+
+.is-created-state .is-btn-mail {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 10px;
+    border: 1px solid #e5e7eb;
+    transition: box-shadow 0.3s ease;
+    width: 100%;
+    max-width: 420px;
+    margin-left: 25%;
+    margin-top: 10px;
+    height: 63px;
+}
+
+.column.is-new-change-design{
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 10px;
+    border: 1px solid #e5e7eb;
+    transition: box-shadow 0.3s ease;
+    width: 100%;
+    max-width: 198px;
+    margin-left: 0%;
+    margin-top: -100px;
+    height: 63px;
+
+}
+
+.button.has-text-weight-bold.is-themed{
+    margin-bottom: 10px;
+}
+
+
+
+.fa.fa-check-square-o.fa-lg.is-new {
+    margin-left: 98px;
 }
