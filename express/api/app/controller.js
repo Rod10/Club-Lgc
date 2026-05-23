@@ -93,11 +93,16 @@ module.exports = () => ({
       const query = new URLSearchParams(req.query).toString();
       const data = renderSrv.userLogin({
         error: true,
-        email: req.body.email,
+        username: req.body.username,
         query: query ? `?${query}` : "",
       });
       res.render("login_society", {data});
     }
+  },
+
+  getLogout(req, res, next) {
+    res.cookie("token", "", {expires: new Date()});
+    res.redirect(SEE_OTHER, "/");
   },
 
   async index(req, res) {

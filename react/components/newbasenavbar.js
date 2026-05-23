@@ -1,5 +1,7 @@
 const React = require("react");
 const PropTypes = require("prop-types");
+const Button = require("./bulma/button");
+const Icon = require("./bulma/icon");
 
 class NewBaseNavbar extends React.Component {
   static _renderLogo(src, logoTitle) {
@@ -15,8 +17,8 @@ class NewBaseNavbar extends React.Component {
       return null;
     }
     return <div
-        className={opened ? "scrollbar-button opened" : "scrollbar-button"}
-        onClick={handle}
+      className={opened ? "scrollbar-button opened" : "scrollbar-button"}
+      onClick={handle}
     >
       <span />
       <span />
@@ -38,6 +40,26 @@ class NewBaseNavbar extends React.Component {
     </div>;
   }
 
+  _renderMenu() {
+    return <div className={"navbar-end"}>
+      {this._renderLogout()}
+    </div>;
+  }
+
+  _renderLogout() {
+    return <div className="navbar-item is-hidden-mobile">
+      <Button
+        label="Déconnexion"
+        icon={<Icon
+          icon="arrow-right-from-bracket"
+          faSize="lg"
+          size="big"
+        />}
+        href={this.props.hrefLogout || `${this.props.base}/logout`}
+      />
+    </div>;
+  }
+
   render() {
     return <div
       className="navbar is-fixed-top is-transparent"
@@ -50,6 +72,7 @@ class NewBaseNavbar extends React.Component {
           this.props.scrollBarOnClick,
         )}
         {this._renderBrand()}
+        {this._renderMenu()}
       </div>
     </div>;
   }

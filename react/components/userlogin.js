@@ -12,7 +12,7 @@ class UserLogin extends React.Component {
 
   static renderInvalidPassword() {
     return <article className="message is-danger"> <div className="message-body">
-      <span>❌ Email ou mot de passe invalide.</span>
+      <span>❌ Nom d'utilisateur ou mot de passe invalide.</span>
     </div> </article>;
   }
 
@@ -33,11 +33,11 @@ class UserLogin extends React.Component {
             action={`/login${this.props.query}`}
           >
             <Input
-              label="Email"
-              type="email"
-              name="email"
-              placeholder="Email"
-              defaultValue={this.props.email || ""}
+              label="Nom d'utilisateur"
+              type="username"
+              name="username"
+              placeholder="Nom d'utilisateur"
+              defaultValue={this.props.username || ""}
               autoFocus
             />
             <Input
@@ -72,13 +72,13 @@ class UserLogin extends React.Component {
 }
 UserLogin.displayName = "UserLogin";
 UserLogin.propTypes = {
-  email: PropTypes.string,
+  username: PropTypes.string,
   error: PropTypes.bool,
   passwordChanged: PropTypes.bool,
   query: PropTypes.string,
 };
 UserLogin.defaultProps = {
-  email: "",
+  username: "",
   error: false,
   passwordChanged: false,
   query: "",

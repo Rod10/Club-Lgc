@@ -25,7 +25,7 @@ const verifyToken = async req => {
 
   const decoded = tokenSrv.verifyUser(token);
   assert(decoded, "Invalid token");
-  assert(decoded.id && decoded.email && decoded.type, "Invalid token");
+  assert(decoded.id && decoded.username && decoded.type, "Invalid token");
   switch (decoded.type) {
   case "user":
     await getUser(req, decoded, true);

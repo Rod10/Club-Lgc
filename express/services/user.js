@@ -7,22 +7,30 @@ const {logger} = require("./logger.js");
 
 const userSrv = {};
 
+userSrv.create = async user => {
+  assert(user.username && user.password, "username and password cannot be null");
+  return User.create({
+    username: user.username,
+    password: await passwordSrv.hash(user.password),
+  });
+};
+
 userSrv.login = async data => {
   assert(data, "Data cannot be null");
-  assert(data.email && data.password, "Email and password cannot be empty");
+  assert(data.username && data.password, "Username and password cannot be empty");
 
-  logger.debug("Authenticate with email=[%s]", data.email);
-  const user = await userSrv.getByEmail(data.email);
+  logger.debug("Authenticate with username=[%s]", data.username);
+  const user = await userSrv.getByUsername(data.username);
   /* if (contributor.state !== ContributorStates.ACTIVE) {
     throw new Error("Contributor is not activated or is blocked");
   } */
   const passed = await passwordSrv.compare(data.password, user.password);
-  assert(passed, "Email and password do not match");
+  assert(passed, "username and password do not match");
   return user;
 };
 
-userSrv.getByEmail = async email => {
-  const user = await User.findOne({where: {email}});
+userSrv.getByUsername = async username => {
+  const user = await User.findOne({where: {username}});
   assert(user, "Contributor not found");
   return user;
 };

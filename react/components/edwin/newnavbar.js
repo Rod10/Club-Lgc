@@ -82,7 +82,7 @@ class NewNavbar extends React.Component {
         hasScrollBar
         scrollBarOpened={this.state.opened}
         scrollBarOnClick={this._handleScrollBarOpen}
-        hrefLogout="/society/logout"
+        hrefLogout="/logout"
         defaultLogo="/images/small_logo_light.png"
       />
 
