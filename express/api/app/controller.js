@@ -85,8 +85,11 @@ module.exports = () => ({
       const user = await userSrv.login(req.body);
       const token = tokenSrv.user(user);
       res.cookie("token", token, cookieOptions);
-
-      res.redirect(SEE_OTHER, "/");
+      if (user.needPasswordChange) {
+        res.redirect(SEE_OTHER, "/change-password");
+      } else {
+        res.redirect(SEE_OTHER, "/");
+      }
     } catch (e) {
       console.log(e);
 
@@ -105,7 +108,23 @@ module.exports = () => ({
     res.redirect(SEE_OTHER, "/");
   },
 
+  getChangePassword(req, res, next) {
+    const data = {user: req.user};
+    const content = renderSrv.changePassword(data);
+
+    return res.render("generic", {content, data, components: ["changepassword"]});
+  },
+
+  async postChangePassword(req, res, next) {
+    await userSrv.changePassword(req.body);
+    res.cookie("token", "", {expires: new Date()});
+    res.redirect(SEE_OTHER, "/");
+  },
+
   async index(req, res) {
+    if (req.user.needPasswordChange) {
+      return res.redirect(SEE_OTHER, "/change-password");
+    }
     const lastSession = await sessionSrv.getLast();
     return getSessionPage(req, res, lastSession);
   },

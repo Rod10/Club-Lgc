@@ -12,6 +12,7 @@ userSrv.create = async user => {
   return User.create({
     username: user.username,
     password: await passwordSrv.hash(user.password),
+    needPasswordChange: user.needPasswordChange,
   });
 };
 
@@ -41,6 +42,15 @@ userSrv.get = async id => {
   const user = await User.findOne({where: {id}});
   assert(user, "Contributor not found");
   return user;
+};
+
+userSrv.changePassword = async data => {
+  assert(data, "Data cannot be null");
+  logger.debug("Change password of username=[%s]", data.userId);
+  const user = await userSrv.get(data.userId);
+  user.password = await passwordSrv.hash(data.password);
+  user.needPasswordChange = false;
+  await user.save();
 };
 
 module.exports = userSrv;

@@ -3,8 +3,9 @@ const userSrv = require("../services/user.js");
 const {sequelize} = require("../models/index.js");
 
 userSrv.create({
-  username: "a@a.com",
+  username: "test",
   password: "12345678",
+  needPasswordChange: 1,
 }).then(user => {
   if (user) {
     console.log("User created");

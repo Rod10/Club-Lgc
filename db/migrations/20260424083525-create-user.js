@@ -16,6 +16,10 @@ module.exports = {
       allowNull: false,
       type: Sequelize.STRING(100),
     },
+    NEED_PASSWORD_CHANGE: {
+      allowNull: false,
+      type: Sequelize.BOOLEAN,
+    },
     CREATION_DATE: {
       allowNull: false,
       type: Sequelize.DATE,
