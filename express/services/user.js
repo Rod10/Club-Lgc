@@ -44,4 +44,13 @@ userSrv.get = async id => {
   return user;
 };
 
+userSrv.changePassword = async data => {
+  assert(data, "Data cannot be null");
+  logger.debug("Change password of username=[%s]", data.userId);
+  const user = await userSrv.get(data.userId);
+  user.password = await passwordSrv.hash(data.password);
+  user.needPasswordChange = false;
+  await user.save();
+};
+
 module.exports = userSrv;

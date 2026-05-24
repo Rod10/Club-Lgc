@@ -25,10 +25,10 @@ module.exports = app => {
   app.instance.get("/login", ctrl.getLogin);
   app.instance.post("/login", ctrl.postLogin);
   app.instance.get("/logout", ctrl.getLogout);
-  app.instance.get("/change-password", ctrl.getChangePassword);
-  app.instance.post("/change-password", ctrl.postChangePassword);
 
   app.instance.use(authMid.strict);
+  app.instance.get("/change-password", ctrl.getChangePassword);
+  app.instance.post("/change-password", ctrl.postChangePassword);
   app.instance.get("/", ctrl.index);
   app.instance.get("/session/list", ctrl.session);
   app.instance.get("/session/new", ctrl.getAddSession);

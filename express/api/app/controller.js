@@ -109,16 +109,22 @@ module.exports = () => ({
   },
 
   getChangePassword(req, res, next) {
-    const data = renderSrv.changePassword();
+    const data = {user: req.user};
+    const content = renderSrv.changePassword(data);
 
-    return res.render("login_society", {data, components: ["changepassword"]});
+    return res.render("generic", {content, data, components: ["changepassword"]});
   },
 
-  postChangePassword(req, res, next) {
-    console.log(req.body);
+  async postChangePassword(req, res, next) {
+    await userSrv.changePassword(req.body);
+    res.cookie("token", "", {expires: new Date()});
+    res.redirect(SEE_OTHER, "/");
   },
 
   async index(req, res) {
+    if (req.user.needPasswordChange) {
+      return res.redirect(SEE_OTHER, "/change-password");
+    }
     const lastSession = await sessionSrv.getLast();
     return getSessionPage(req, res, lastSession);
   },

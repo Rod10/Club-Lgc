@@ -1,4 +1,5 @@
 const React = require("react");
+const PropTypes = require("prop-types");
 
 const Title = require("./bulma/title.js");
 const Input = require("./bulma/input.js");
@@ -28,7 +29,7 @@ class ChangePassword extends React.Component {
 
   constructor(props) {
     super(props);
-
+    console.log(this.props);
     this.state = {
       email: "",
       previousPassword: "",
@@ -73,6 +74,11 @@ class ChangePassword extends React.Component {
         <p>Saisissez un mot de passe jusqu'à ce que l'indicateur sous le champ de mot de passe
           devienne jaune, ou idéalement vert.</p>
       </div>
+      <input
+        className="is-hidden"
+        name="userId"
+        defaultValue={this.props.user.id}
+      />
       <PasswordInput
         label="Nouveau mot de passe"
         previousPassword={this.state.previousPassword}
@@ -111,7 +117,7 @@ class ChangePassword extends React.Component {
   }
 }
 
-ChangePassword.propTypes = {};
+ChangePassword.propTypes = {user: PropTypes.object.isRequired,};
 ChangePassword.displayName = "ChangePassword";
 
 module.exports = ChangePassword;
