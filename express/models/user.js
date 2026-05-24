@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(200),
       allowNull: true,
     },
+    needPasswordChange: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
     creationDate: {
       type: DataTypes.DATE,
       allowNull: false,

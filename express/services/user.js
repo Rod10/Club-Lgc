@@ -12,6 +12,7 @@ userSrv.create = async user => {
   return User.create({
     username: user.username,
     password: await passwordSrv.hash(user.password),
+    needPasswordChange: user.needPasswordChange,
   });
 };
 
